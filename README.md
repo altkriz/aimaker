@@ -1,22 +1,31 @@
+# Tavern Card Maker
 
-# AI Maker & Editor
-![License](https://altkriz.github.io/aimaker/image.png)
-![Version](https://img.shields.io/badge/version-v0.5.0-blue)
+A powerful, client-side tool to Create, Forge, and Extract TavernAI Character Cards (V2).
 
-> Create, edit and convert to and from popular AI character formats easily
-
-### [Use AIMaker & Editor online](https://altkriz.github.io/aimaker/)
+**Live Demo:** [https://altkriz.github.io/aimaker/](https://altkriz.github.io/aimaker/)
 
 ## Features
-- Simple and easy to use interface
-- Works entirely client side in your browser, completely offline
-- Create a new character from scratch or load an existing one
-- Supports [CharacterAI](https://character.ai/), [Pygmalion](https://github.com/PygmalionAI/gradio-ui), [Text Generation](https://github.com/oobabooga/text-generation-webui) and [TavernAI](https://github.com/TavernAI/TavernAI) formats
-- Imports and exports JSON and Character Card image files
-- Generates a universally supported JSON format
-- Easily add an image to a JSON character
-- Automatic image conversion to PNG
-- Displays additional file and format metadata
-- Validates and shows token count for each field
-- Light and dark mode support
 
+*   **Character Creator:** Design new characters from scratch with a guided interface. Export as JSON or embed directly into a PNG.
+*   **Card Forger:** Embed existing character JSON data into any PNG image to create a valid Tavern card.
+*   **Data Extractor:** Upload any Tavern PNG card to view and extract its hidden JSON data.
+*   **Client-Side Only:** All processing happens in your browser. No data is sent to any server.
+*   **Platform Compatible:** Fully compatible with **Chub.ai**, **JanitorAI**, **Agnai.chat**, **SillyTavern**, and other platforms that support the V2 Character Card spec.
+
+## Usage
+
+1.  Clone the repository or download `index.html`.
+2.  Open `index.html` in any modern web browser.
+3.  Start creating!
+
+## Credits
+
+Created by **[altkriz](https://github.com/altkriz)**.
+
+*   **Twitter/X:** [@altkriz](https://x.com/altkriz/)
+*   **Instagram:** [@altkriz](https://instagram.com/altkriz)
+*   **Website:** [altkriz.github.io](https://altkriz.github.io/)
+
+## License
+
+MIT License. Feel free to use and modify.
