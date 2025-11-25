@@ -820,7 +820,11 @@
                     const text = uint8ArrayToString(data);
                     const parts = text.split('\0');
                     if (parts[0] === 'chara') {
-                        return atob(parts[1]);
+                        try {
+                            return decodeURIComponent(escape(atob(parts[1])));
+                        } catch (e) {
+                            return atob(parts[1]);
+                        }
                     }
                 }
 
@@ -835,7 +839,7 @@
 
             // Prepare new chunk
             const keyword = "chara";
-            const base64Data = btoa(jsonData);
+            const base64Data = btoa(unescape(encodeURIComponent(jsonData)));
             const textData = stringToUint8Array(keyword + '\0' + base64Data);
             const type = stringToUint8Array("tEXt");
 
