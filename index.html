@@ -7,8 +7,8 @@
 
     <!-- SEO & Meta Tags -->
     <!-- Pixel Code for https://kriztech.in/analytics/ -->
-<script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
-<!-- END Pixel Code -->
+    <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
+    <!-- END Pixel Code -->
     <title>Tavern Card Maker by altkriz</title>
     <meta name="description"
         content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms.">
@@ -558,6 +558,13 @@
                     <div class="card-desc">Reveal the hidden soul of a character card. Extract JSON data from any Tavern
                         PNG.</div>
                 </div>
+
+                <div class="mode-card" onclick="openWorkspace('edit')">
+                    <div class="card-icon">✏️</div>
+                    <div class="card-title">Card Editor</div>
+                    <div class="card-desc">Edit existing cards. Load from PNG or JSON, modify contents, and save as new.
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -633,7 +640,7 @@
 
                 <div id="create-image-upload" class="input-group" style="display: none;">
                     <label>Base Image</label>
-                    <div class="file-drop-zone" onclick="document.getElementById('create_img').click()">
+                    <div class="file-drop-zone">
                         <input type="file" id="create_img" accept="image/png"
                             onchange="previewFile(this, 'create_preview')">
                         <div class="drop-icon">🖼️</div>
@@ -656,7 +663,7 @@
             <form id="forgeForm">
                 <div class="input-group">
                     <label>Source Image</label>
-                    <div class="file-drop-zone" onclick="document.getElementById('forge_img').click()">
+                    <div class="file-drop-zone">
                         <input type="file" id="forge_img" accept="image/png" required
                             onchange="previewFile(this, 'forge_preview')">
                         <div class="drop-icon">📁</div>
@@ -685,7 +692,7 @@
             <form id="extractForm">
                 <div class="input-group">
                     <label>Character Card</label>
-                    <div class="file-drop-zone" onclick="document.getElementById('extract_img').click()">
+                    <div class="file-drop-zone">
                         <input type="file" id="extract_img" accept="image/png" required
                             onchange="previewFile(this, 'extract_preview')">
                         <div class="drop-icon">🔍</div>
@@ -700,9 +707,109 @@
             <div id="extractResult" style="display: none; margin-top: 3rem; animation: fadeInUp 0.5s ease;">
                 <label>Extracted Soul (JSON)</label>
                 <pre><code id="json-output"></code></pre>
-                <button type="button" class="btn btn-secondary" style="margin-top: 1rem;"
-                    onclick="copyToClipboard()">Copy to Clipboard</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="copyToClipboard()">Copy to
+                        Clipboard</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadExtractedJson()">Download
+                        JSON</button>
+                </div>
             </div>
+        </div>
+        <div id="edit" class="workspace">
+            <div class="workspace-header">
+                <div class="workspace-title">Card Editor</div>
+                <p style="color: var(--text-muted)">Refine and reshape existing souls</p>
+            </div>
+
+            <!-- Step 1: Upload -->
+            <div id="edit-upload-step">
+                <div class="file-drop-zone">
+                    <input type="file" id="edit_upload_input" accept=".json,image/png"
+                        onchange="handleEditUpload(this)">
+                    <div class="drop-icon">📂</div>
+                    <div class="drop-text">Upload Character Card (PNG) or JSON Data</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Edit Form (Initially Hidden) -->
+            <form id="editForm" style="display: none;">
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label>Name</label>
+                        <input type="text" id="e_name" required placeholder="e.g. Eldrin the Sage">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Description</label>
+                        <textarea id="e_description" rows="3"
+                            placeholder="Physical appearance, age, notable features..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Personality</label>
+                        <textarea id="e_personality" rows="3"
+                            placeholder="Traits, quirks, demeanor, likes/dislikes..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>First Message</label>
+                        <textarea id="e_first_mes" rows="4" required
+                            placeholder="The opening line when a chat begins..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Scenario</label>
+                        <textarea id="e_scenario" rows="2"
+                            placeholder="Current situation, location, or context..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Message Examples</label>
+                        <textarea id="e_mes_example" rows="6"
+                            placeholder="<START>&#10;{{user}}: Hello&#10;{{char}}: Greetings, traveler."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Creator Name</label>
+                        <input type="text" id="e_creator" placeholder="Your Alias">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tags</label>
+                        <input type="text" id="e_tags" placeholder="Fantasy, Elf, Magic (comma separated)">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 2rem;">
+                    <label>Output Format</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="e_download_type" value="json" checked
+                                onchange="toggleEditImage(false)">
+                            <span>JSON File</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="e_download_type" value="png" onchange="toggleEditImage(true)">
+                            <span>Embed in PNG</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="edit-image-upload" class="input-group" style="display: none;">
+                    <label>Base Image</label>
+                    <div class="file-drop-zone">
+                        <input type="file" id="edit_img" accept="image/png"
+                            onchange="previewFile(this, 'edit_preview')">
+                        <div class="drop-icon">🖼️</div>
+                        <div class="drop-text">Click to change base image</div>
+                        <img id="edit_preview" class="preview-image">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Changes</button>
+                <button type="button" class="btn btn-secondary" style="margin-top: 1rem;" onclick="resetEdit()">Cancel /
+                    Load Another</button>
+            </form>
         </div>
     </main>
 
@@ -944,6 +1051,19 @@
             });
         }
 
+        function downloadExtractedJson() {
+            const text = document.getElementById('json-output').innerText;
+            if (!text) return;
+
+            const blob = new Blob([text], { type: 'application/json' });
+            let filename = document.getElementById('extractResult').dataset.filename || 'extracted_character.png';
+
+            // Replace extension with .json
+            filename = filename.replace(/\.[^/.]+$/, "") + ".json";
+
+            downloadBlob(blob, filename);
+        }
+
         function downloadBlob(blob, filename) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -968,7 +1088,10 @@
                 // Pretty print
                 const jsonObj = JSON.parse(jsonStr);
                 document.getElementById('json-output').innerText = JSON.stringify(jsonObj, null, 2);
-                document.getElementById('extractResult').style.display = 'block';
+
+                const resultDiv = document.getElementById('extractResult');
+                resultDiv.style.display = 'block';
+                resultDiv.dataset.filename = file.name;
             } catch (err) {
                 alert('Error: ' + err.message);
             }
@@ -1043,10 +1166,130 @@
             }
         });
 
+        // --- Card Editor Logic ---
+
+        let currentEditBlob = null; // Store original image blob if available
+
+        async function handleEditUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            try {
+                let data = null;
+
+                if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    const text = await file.text();
+                    const json = JSON.parse(text);
+                    data = json.data || json; // Handle wrapped or raw
+                    currentEditBlob = null;
+                } else if (file.type === 'image/png') {
+                    const jsonStr = await extractDataFromPNG(file);
+                    const json = JSON.parse(jsonStr);
+                    data = json.data || json;
+
+                    // Set preview
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.getElementById('edit_preview');
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                    currentEditBlob = file;
+                } else {
+                    throw new Error("Unsupported file type");
+                }
+
+                if (!data) throw new Error("Could not parse character data");
+
+                // Populate form
+                document.getElementById('e_name').value = data.name || '';
+                document.getElementById('e_description').value = data.description || '';
+                document.getElementById('e_personality').value = data.personality || '';
+                document.getElementById('e_first_mes').value = data.first_mes || '';
+                document.getElementById('e_scenario').value = data.scenario || '';
+                document.getElementById('e_mes_example').value = data.mes_example || '';
+                document.getElementById('e_creator').value = data.creator || '';
+                document.getElementById('e_tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || '');
+
+                // Show form
+                document.getElementById('edit-upload-step').style.display = 'none';
+                document.getElementById('editForm').style.display = 'block';
+
+            } catch (err) {
+                alert('Error loading character: ' + err.message);
+            }
+        }
+
+        function resetEdit() {
+            document.getElementById('editForm').reset();
+            document.getElementById('editForm').style.display = 'none';
+            document.getElementById('edit-upload-step').style.display = 'block';
+            document.getElementById('edit_img').value = '';
+            document.getElementById('edit_preview').src = '';
+            document.getElementById('edit_preview').style.display = 'none';
+            currentEditBlob = null;
+        }
+
+        function toggleEditImage(show) {
+            const el = document.getElementById('edit-image-upload');
+            el.style.display = show ? 'block' : 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById('e_name').value,
+                description: document.getElementById('e_description').value,
+                personality: document.getElementById('e_personality').value,
+                first_mes: document.getElementById('e_first_mes').value,
+                scenario: document.getElementById('e_scenario').value,
+                mes_example: document.getElementById('e_mes_example').value,
+                creator: document.getElementById('e_creator').value,
+                tags: document.getElementById('e_tags').value.split(',').map(t => t.trim()).filter(t => t),
+                character_version: 'main',
+                extensions: {}
+            };
+
+            const card = {
+                spec: 'chara_card_v2',
+                spec_version: '2.0',
+                data: data
+            };
+
+            const jsonString = JSON.stringify(card, null, 2);
+            const downloadType = document.querySelector('input[name="e_download_type"]:checked').value;
+
+            if (downloadType === 'json') {
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                downloadBlob(blob, data.name.replace(/[^a-z0-9]/gi, '_') + '.json');
+            } else {
+                let file = document.getElementById('edit_img').files[0];
+
+                // If no new file selected, but we have the original blob from upload
+                if (!file && currentEditBlob) {
+                    file = currentEditBlob;
+                }
+
+                if (!file) {
+                    alert("Please select a base image or ensure original PNG was loaded.");
+                    return;
+                }
+
+                try {
+                    const newBlob = await embedDataInPNG(file, jsonString);
+                    downloadBlob(newBlob, data.name.replace(/[^a-z0-9]/gi, '_') + '.png');
+                } catch (err) {
+                    alert('Error: ' + err.message);
+                }
+            }
+        });
+
         // Handle Back Button & Hash on Load
         window.addEventListener('popstate', () => {
             const hash = window.location.hash.substring(1);
-            if (['create', 'forge', 'extract'].includes(hash)) {
+            if (['create', 'forge', 'extract', 'edit'].includes(hash)) {
                 openWorkspace(hash);
             } else {
                 showHome();
@@ -1055,7 +1298,7 @@
 
         // Initial Load
         const hash = window.location.hash.substring(1);
-        if (['create', 'forge', 'extract'].includes(hash)) {
+        if (['create', 'forge', 'extract', 'edit'].includes(hash)) {
             openWorkspace(hash);
         }
     </script>
