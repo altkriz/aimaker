@@ -11,15 +11,15 @@
     <!-- END Pixel Code -->
     <title>Tavern Card Maker by altkriz</title>
     <meta name="description"
-        content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms.">
+        content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
     <meta name="keywords"
-        content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker">
+        content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker, KrizRP, Telegram Bot, Studio">
     <meta name="author" content="altkriz">
 
     <!-- Open Graph / Social -->
     <meta property="og:title" content="Tavern Card Maker by altkriz">
     <meta property="og:description"
-        content="Create and edit TavernAI character cards easily. Supports all major platforms.">
+        content="Create and edit TavernAI character cards easily. Supports all major platforms and KrizRP.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://altkriz.github.io/aimaker/">
 
@@ -162,10 +162,10 @@
             justify-content: center;
         }
 
-        /* Mode Selection (Landing) */
+        /* Mode Selection (Landing) - now includes 6 cards */
         .mode-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             width: 100%;
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -175,13 +175,16 @@
             background: var(--card-bg);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 3rem 2rem;
+            padding: 2.5rem 1.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .mode-card::before {
@@ -197,7 +200,7 @@
         }
 
         .mode-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             border-color: var(--primary);
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
         }
@@ -207,23 +210,55 @@
         }
 
         .card-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 3.2rem;
+            margin-bottom: 1.2rem;
             display: inline-block;
             filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
         }
 
         .card-title {
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: #fff;
         }
 
         .card-desc {
             color: var(--text-muted);
             line-height: 1.6;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        /* Special style for Kriz cards (non-workspace) */
+        .kriz-action-card {
+            cursor: default; /* not opening workspace */
+        }
+        .kriz-action-card .card-icon {
+            font-size: 3rem;
+        }
+        .kriz-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 0.03em;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(129, 140, 248, 0.3);
+            margin-top: 1.2rem;
+            width: fit-content;
+            align-self: center;
+        }
+
+        .kriz-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(129, 140, 248, 0.5);
         }
 
         /* Workspaces */
@@ -535,9 +570,10 @@
     </nav>
 
     <main>
-        <!-- Landing Page -->
+        <!-- Landing Page with 6 cards (4 original + 2 KrizRP) -->
         <div id="home">
             <div class="mode-selector">
+                <!-- Original Creator Card -->
                 <div class="mode-card" onclick="openWorkspace('create')">
                     <div class="card-icon">✨</div>
                     <div class="card-title">Character Creator</div>
@@ -545,6 +581,7 @@
                         a guided interface.</div>
                 </div>
 
+                <!-- Original Forger Card -->
                 <div class="mode-card" onclick="openWorkspace('forge')">
                     <div class="card-icon">🔨</div>
                     <div class="card-title">Card Forger</div>
@@ -552,6 +589,7 @@
                         Tavern card.</div>
                 </div>
 
+                <!-- Original Extractor Card -->
                 <div class="mode-card" onclick="openWorkspace('extract')">
                     <div class="card-icon">🔍</div>
                     <div class="card-title">Data Extractor</div>
@@ -559,11 +597,28 @@
                         PNG.</div>
                 </div>
 
+                <!-- Original Editor Card -->
                 <div class="mode-card" onclick="openWorkspace('edit')">
                     <div class="card-icon">✏️</div>
                     <div class="card-title">Card Editor</div>
                     <div class="card-desc">Edit existing cards. Load from PNG or JSON, modify contents, and save as new.
                     </div>
+                </div>
+
+                <!-- NEW: KrizRP Telegram Bot Card (no workspace, just link) -->
+                <div class="mode-card kriz-action-card">
+                    <div class="card-icon">🤖</div>
+                    <div class="card-title">KrizRP Telegram</div>
+                    <div class="card-desc">Chat with your created characters directly on Telegram. Seamless import from Tavern cards, persistent chats, and a growing library.</div>
+                    <a href="https://t.me/krizrpbot" target="_blank" class="kriz-btn">Try Bot →</a>
+                </div>
+
+                <!-- NEW: KrizRP Studio Card (no workspace, just link) -->
+                <div class="mode-card kriz-action-card">
+                    <div class="card-icon">🎭</div>
+                    <div class="card-title">KrizRP Studio</div>
+                    <div class="card-desc">Thousands of characters, powerful search, full compatibility. Upload cards made here, discover new personas, and dive in.</div>
+                    <a href="https://kriztech.in/krizrp" target="_blank" class="kriz-btn">Open Studio →</a>
                 </div>
             </div>
         </div>
@@ -818,6 +873,7 @@
             Fully compatible with <span>Chub.ai</span>, <span>JanitorAI</span>, <span>Agnai.chat</span>,
             <span>SillyTavern</span>, and other Tavern-supported platforms.
         </div>
+
         <div class="social-links">
             <a href="https://x.com/altkriz/" target="_blank" class="social-link">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
