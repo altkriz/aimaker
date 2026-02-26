@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +10,17 @@
     <!-- Pixel Code for https://kriztech.in/analytics/ -->
     <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
     <!-- END Pixel Code -->
+
+    <!-- KrizReplay: Session Recording -->
+    <script src="https://cdn.jsdelivr.net/npm/rrweb@2.0.0-alpha.4/dist/rrweb-all.min.js"></script>
+    <script>
+        window.KRIZREPLAY_CONFIG = {
+            endpoint: 'https://kriztech.in/info/api.php',
+            project_id: 'aimaker',
+            flush_interval: 10000,
+            max_recording_minutes: 30
+        };
+    </script>
     <title>Tavern Card Maker by altkriz</title>
     <meta name="description"
         content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
@@ -197,6 +209,7 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
             opacity: 0;
             transition: opacity 0.4s;
+            pointer-events: none;
         }
 
         .mode-card:hover {
@@ -254,6 +267,8 @@
             margin-top: 1.2rem;
             width: fit-content;
             align-self: center;
+            position: relative;
+            z-index: 2;
         }
 
         .kriz-btn:hover {
@@ -1358,6 +1373,9 @@
             openWorkspace(hash);
         }
     </script>
+
+    <!-- KrizReplay Recorder (must load AFTER rrweb) -->
+    <script src="https://kriztech.in/info/krizreplay.js"></script>
 </body>
 
 </html>
