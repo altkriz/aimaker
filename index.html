@@ -10,10 +10,9 @@
     <!-- Pixel Code for https://kriztech.in/analytics/ -->
     <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
     <!-- END Pixel Code -->
-
-    <!-- KrizReplay: Session Recording -->
+  <!-- KrizReplay: Session Recording -->
 <script src="https://kriztech.in/info/pixel.js"></script>
-   
+
     <title>Tavern Card Maker by altkriz</title>
     <meta name="description"
         content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
@@ -684,6 +683,35 @@
                         <label>Tags</label>
                         <input type="text" id="c_tags" placeholder="Fantasy, Elf, Magic (comma separated)">
                     </div>
+                    
+                    <div class="input-group">
+                        <label>Character Version</label>
+                        <input type="text" id="c_character_version" placeholder="e.g. 1.0 or main">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Creator Notes</label>
+                        <textarea id="c_creator_notes" rows="3"
+                            placeholder="Notes from the creator..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>System Prompt</label>
+                        <textarea id="c_system_prompt" rows="3"
+                            placeholder="Special instructions for the model..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Post History Instructions</label>
+                        <textarea id="c_post_history_instructions" rows="3"
+                            placeholder="In-chat instructions appended to history..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Alternate Greetings</label>
+                        <textarea id="c_alternate_greetings" rows="4"
+                            placeholder="Alternative opening messages (one per line)..."></textarea>
+                    </div>
                 </div>
 
                 <div class="input-group" style="margin-top: 2rem;">
@@ -840,6 +868,35 @@
                     <div class="input-group">
                         <label>Tags</label>
                         <input type="text" id="e_tags" placeholder="Fantasy, Elf, Magic (comma separated)">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Character Version</label>
+                        <input type="text" id="e_character_version" placeholder="e.g. 1.0 or main">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Creator Notes</label>
+                        <textarea id="e_creator_notes" rows="3"
+                            placeholder="Notes from the creator..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>System Prompt</label>
+                        <textarea id="e_system_prompt" rows="3"
+                            placeholder="Special instructions for the model..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Post History Instructions</label>
+                        <textarea id="e_post_history_instructions" rows="3"
+                            placeholder="In-chat instructions appended to history..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Alternate Greetings</label>
+                        <textarea id="e_alternate_greetings" rows="4"
+                            placeholder="Alternative opening messages (one per line)..."></textarea>
                     </div>
                 </div>
 
@@ -1170,14 +1227,47 @@
             try {
                 // Validate JSON
                 let jsonObj = JSON.parse(jsonInput);
-                if (!jsonObj.spec || jsonObj.spec !== 'chara_card_v2') {
-                    jsonObj = {
-                        spec: 'chara_card_v2',
-                        spec_version: '2.0',
-                        data: jsonObj
-                    };
-                }
-                const finalJson = JSON.stringify(jsonObj);
+                let innerData = jsonObj.data ? jsonObj.data : jsonObj;
+
+                innerData = {
+                    name: innerData.name || "",
+                    description: innerData.description || "",
+                    personality: innerData.personality || "",
+                    first_mes: innerData.first_mes || "",
+                    avatar: innerData.avatar || "",
+                    mes_example: innerData.mes_example || "",
+                    scenario: innerData.scenario || "",
+                    creator_notes: innerData.creator_notes || "",
+                    system_prompt: innerData.system_prompt || "",
+                    post_history_instructions: innerData.post_history_instructions || "",
+                    alternate_greetings: innerData.alternate_greetings || [],
+                    tags: innerData.tags || [],
+                    creator: innerData.creator || "",
+                    character_version: innerData.character_version || "",
+                    extensions: Object.assign({
+                        fav: false,
+                        chub: {
+                            id: 0,
+                            preset: null,
+                            full_path: "",
+                            extensions: [],
+                            expressions: null,
+                            alt_expressions: {},
+                            background_image: null,
+                            related_lorebooks: []
+                        },
+                        world: "",
+                        talkativeness: ""
+                    }, innerData.extensions || {}),
+                    character_book: innerData.character_book || null
+                };
+
+                const cardData = {
+                    spec: 'chara_card_v2',
+                    spec_version: '2.0',
+                    data: innerData
+                };
+                const finalJson = JSON.stringify(cardData);
 
                 const newBlob = await embedDataInPNG(file, finalJson);
                 downloadBlob(newBlob, 'forged_' + file.name);
@@ -1190,17 +1280,39 @@
         document.getElementById('createForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const rawAltGreetings = document.getElementById('c_alternate_greetings').value.split('\n').map(g => g.trim()).filter(g => g !== '');
+
             const data = {
                 name: document.getElementById('c_name').value,
                 description: document.getElementById('c_description').value,
                 personality: document.getElementById('c_personality').value,
                 first_mes: document.getElementById('c_first_mes').value,
-                scenario: document.getElementById('c_scenario').value,
+                avatar: "",
                 mes_example: document.getElementById('c_mes_example').value,
-                creator: document.getElementById('c_creator').value,
+                scenario: document.getElementById('c_scenario').value,
+                creator_notes: document.getElementById('c_creator_notes').value,
+                system_prompt: document.getElementById('c_system_prompt').value,
+                post_history_instructions: document.getElementById('c_post_history_instructions').value,
+                alternate_greetings: rawAltGreetings,
                 tags: document.getElementById('c_tags').value.split(',').map(t => t.trim()).filter(t => t),
-                character_version: 'main',
-                extensions: {}
+                creator: document.getElementById('c_creator').value,
+                character_version: document.getElementById('c_character_version').value,
+                extensions: {
+                    fav: false,
+                    chub: {
+                        id: 0,
+                        preset: null,
+                        full_path: "",
+                        extensions: [],
+                        expressions: null,
+                        alt_expressions: {},
+                        background_image: null,
+                        related_lorebooks: []
+                    },
+                    world: "",
+                    talkativeness: ""
+                },
+                character_book: null
             };
 
             const card = {
@@ -1233,6 +1345,7 @@
         // --- Card Editor Logic ---
 
         let currentEditBlob = null; // Store original image blob if available
+        let currentEditOriginalData = null;
 
         async function handleEditUpload(input) {
             const file = input.files[0];
@@ -1265,6 +1378,7 @@
                 }
 
                 if (!data) throw new Error("Could not parse character data");
+                currentEditOriginalData = data;
 
                 // Populate form
                 document.getElementById('e_name').value = data.name || '';
@@ -1275,6 +1389,12 @@
                 document.getElementById('e_mes_example').value = data.mes_example || '';
                 document.getElementById('e_creator').value = data.creator || '';
                 document.getElementById('e_tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || '');
+
+                document.getElementById('e_creator_notes').value = data.creator_notes || '';
+                document.getElementById('e_system_prompt').value = data.system_prompt || '';
+                document.getElementById('e_post_history_instructions').value = data.post_history_instructions || '';
+                document.getElementById('e_alternate_greetings').value = Array.isArray(data.alternate_greetings) ? data.alternate_greetings.join('\n') : '';
+                document.getElementById('e_character_version').value = data.character_version || '';
 
                 // Show form
                 document.getElementById('edit-upload-step').style.display = 'none';
@@ -1293,6 +1413,7 @@
             document.getElementById('edit_preview').src = '';
             document.getElementById('edit_preview').style.display = 'none';
             currentEditBlob = null;
+            currentEditOriginalData = null;
         }
 
         function toggleEditImage(show) {
@@ -1303,17 +1424,45 @@
         document.getElementById('editForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const rawAltGreetings = document.getElementById('e_alternate_greetings').value.split('\n').map(g => g.trim()).filter(g => g !== '');
+
+            let origExtensions = currentEditOriginalData && currentEditOriginalData.extensions ? currentEditOriginalData.extensions : {};
+            let ext = Object.assign({
+                fav: false,
+                chub: {
+                    id: 0,
+                    preset: null,
+                    full_path: "",
+                    extensions: [],
+                    expressions: null,
+                    alt_expressions: {},
+                    background_image: null,
+                    related_lorebooks: []
+                },
+                world: "",
+                talkativeness: ""
+            }, origExtensions);
+
+            let origAvatar = currentEditOriginalData && currentEditOriginalData.avatar ? currentEditOriginalData.avatar : "";
+            let origBook = currentEditOriginalData && currentEditOriginalData.character_book ? currentEditOriginalData.character_book : null;
+
             const data = {
                 name: document.getElementById('e_name').value,
                 description: document.getElementById('e_description').value,
                 personality: document.getElementById('e_personality').value,
                 first_mes: document.getElementById('e_first_mes').value,
-                scenario: document.getElementById('e_scenario').value,
+                avatar: origAvatar,
                 mes_example: document.getElementById('e_mes_example').value,
-                creator: document.getElementById('e_creator').value,
+                scenario: document.getElementById('e_scenario').value,
+                creator_notes: document.getElementById('e_creator_notes').value,
+                system_prompt: document.getElementById('e_system_prompt').value,
+                post_history_instructions: document.getElementById('e_post_history_instructions').value,
+                alternate_greetings: rawAltGreetings,
                 tags: document.getElementById('e_tags').value.split(',').map(t => t.trim()).filter(t => t),
-                character_version: 'main',
-                extensions: {}
+                creator: document.getElementById('e_creator').value,
+                character_version: document.getElementById('e_character_version').value,
+                extensions: ext,
+                character_book: origBook
             };
 
             const card = {
@@ -1366,6 +1515,7 @@
             openWorkspace(hash);
         }
     </script>
+
 
 </body>
 
