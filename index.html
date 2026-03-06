@@ -10,7 +10,7 @@
     <!-- Pixel Code for https://kriztech.in/analytics/ -->
     <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
     <!-- END Pixel Code -->
-  <!-- KrizReplay: Session Recording -->
+<!-- KrizReplay: Session Recording -->
 <script src="https://kriztech.in/info/pixel.js"></script>
 
     <title>Tavern Card Maker by altkriz</title>
@@ -715,6 +715,14 @@
                 </div>
 
                 <div class="input-group" style="margin-top: 2rem;">
+                    <label>Card Specification</label>
+                    <select id="c_spec_format" style="width: fit-content;">
+                        <option value="v2" selected>Character Card V2 (Default)</option>
+                        <option value="v3">Character Card V3</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-top: 1rem;">
                     <label>Output Format</label>
                     <div class="radio-group">
                         <label class="radio-option">
@@ -769,7 +777,15 @@
                         placeholder='{ "name": "...", "description": "..." }'></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Forge Card</button>
+                <div class="input-group">
+                    <label>Card Specification</label>
+                    <select id="f_spec_format" style="width: fit-content;">
+                        <option value="v2" selected>Character Card V2 (Default)</option>
+                        <option value="v3">Character Card V3</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Forge Card</button>
             </form>
         </div>
 
@@ -901,6 +917,14 @@
                 </div>
 
                 <div class="input-group" style="margin-top: 2rem;">
+                    <label>Card Specification</label>
+                    <select id="e_spec_format" style="width: fit-content;">
+                        <option value="v2" selected>Character Card V2 (Default)</option>
+                        <option value="v3">Character Card V3</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-top: 1rem;">
                     <label>Output Format</label>
                     <div class="radio-group">
                         <label class="radio-option">
@@ -1262,9 +1286,31 @@
                     character_book: innerData.character_book || null
                 };
 
+                const specFormat = document.getElementById('f_spec_format').value;
+                const isV3 = specFormat === 'v3';
+                
+                if (isV3) {
+                    if (!innerData.assets) {
+                        innerData.assets = [{
+                            type: 'icon',
+                            uri: 'ccdefault:',
+                            name: 'main',
+                            ext: 'png'
+                        }];
+                    }
+                    if (!innerData.group_only_greetings) innerData.group_only_greetings = [];
+                    if (!innerData.creation_date) innerData.creation_date = Math.floor(Date.now() / 1000);
+                    innerData.modification_date = Math.floor(Date.now() / 1000);
+                } else {
+                    delete innerData.assets;
+                    delete innerData.group_only_greetings;
+                    delete innerData.creation_date;
+                    delete innerData.modification_date;
+                }
+
                 const cardData = {
-                    spec: 'chara_card_v2',
-                    spec_version: '2.0',
+                    spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
+                    spec_version: isV3 ? '3.0' : '2.0',
                     data: innerData
                 };
                 const finalJson = JSON.stringify(cardData);
@@ -1315,9 +1361,24 @@
                 character_book: null
             };
 
+            const specFormat = document.getElementById('c_spec_format').value;
+            const isV3 = specFormat === 'v3';
+
+            if (isV3) {
+                data.assets = [{
+                    type: 'icon',
+                    uri: 'ccdefault:',
+                    name: 'main',
+                    ext: 'png'
+                }];
+                data.group_only_greetings = [];
+                data.creation_date = Math.floor(Date.now() / 1000);
+                data.modification_date = Math.floor(Date.now() / 1000);
+            }
+
             const card = {
-                spec: 'chara_card_v2',
-                spec_version: '2.0',
+                spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
+                spec_version: isV3 ? '3.0' : '2.0',
                 data: data
             };
 
@@ -1465,9 +1526,26 @@
                 character_book: origBook
             };
 
+            const specFormat = document.getElementById('e_spec_format').value;
+            const isV3 = specFormat === 'v3';
+
+            if (isV3) {
+                if (!data.assets) {
+                    data.assets = [{
+                        type: 'icon',
+                        uri: 'ccdefault:',
+                        name: 'main',
+                        ext: 'png'
+                    }];
+                }
+                if (!data.group_only_greetings) data.group_only_greetings = [];
+                if (!data.creation_date) data.creation_date = Math.floor(Date.now() / 1000);
+                data.modification_date = Math.floor(Date.now() / 1000);
+            }
+
             const card = {
-                spec: 'chara_card_v2',
-                spec_version: '2.0',
+                spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
+                spec_version: isV3 ? '3.0' : '2.0',
                 data: data
             };
 
