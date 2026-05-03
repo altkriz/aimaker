@@ -1,1600 +1,1088 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- SEO & Meta Tags -->
-    <!-- Pixel Code for https://kriztech.in/analytics/ -->
-    <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
-    <!-- END Pixel Code -->
-<!-- KrizReplay: Session Recording -->
-<script src="https://kriztech.in/info/pixel.js"></script>
-
-    <title>Tavern Card Maker by altkriz</title>
-    <meta name="description"
-        content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
-    <meta name="keywords"
-        content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker, KrizRP, Telegram Bot, Studio">
+    <title>AiMaker by altkriz</title>
+    <meta name="description" content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
+    <meta name="keywords" content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker, KrizRP, Telegram Bot, Studio">
     <meta name="author" content="altkriz">
-
-    <!-- Open Graph / Social -->
-    <meta property="og:title" content="Tavern Card Maker by altkriz">
-    <meta property="og:description"
-        content="Create and edit TavernAI character cards easily. Supports all major platforms and KrizRP.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://altkriz.github.io/aimaker/">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <meta property="og:title" content="AiMaker by altkriz">
+    <meta property="og:description" content="Create and edit TavernAI character cards easily. Supports all major platforms and KrizRP.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: 'var(--bg)', surface: 'var(--surface)', elevated: 'var(--elevated)',
+                        bdr: 'var(--bdr)', muted: 'var(--muted)', txt: 'var(--txt)',
+                        accent: 'var(--accent)', 'accent-h': 'var(--accent-h)', err: '#e84848', ok: '#30c878'
+                    },
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --primary: #818cf8;
-            --primary-glow: rgba(129, 140, 248, 0.5);
-            --secondary: #c084fc;
-            --accent: #f472b6;
-            --bg-dark: #020617;
-            --card-bg: rgba(30, 41, 59, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --success: #34d399;
-            --error: #f87171;
+            --accent: #e89b20; --accent-h: #fbb034;
+            --bg: #f8f8fc; --surface: #ffffff; --elevated: #f1f1f6;
+            --bdr: #dcdce8; --muted: #71718a; --txt: #18182b;
+            --header-from: rgba(255,255,255,.97); --header-to: rgba(248,248,252,.98);
+            --danger-bg: #fef2f2; --danger-border: #fecaca; --danger-hover-bg: #fee2e2;
+            --toast-ok-bg: #f0fdf4; --toast-ok-border: #bbf7d0;
+            --toast-err-bg: #fef2f2; --toast-err-border: #fecaca;
+            --toast-info-bg: #eff6ff; --toast-info-border: #bfdbfe;
+            --card-hover-bdr: #c4c4d4; --hero-glow: rgba(232,155,32,.08);
+            --preview-from: #e8e8f2; --preview-to: #dde0f0;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        body[data-theme="dark"] {
+            --accent: #e89b20; --accent-h: #fbb034;
+            --bg: #0b0b0e; --surface: #131318; --elevated: #1b1b22;
+            --bdr: #28283a; --muted: #65657e; --txt: #e4e4f0;
+            --header-from: rgba(19,19,24,.95); --header-to: rgba(11,11,14,.98);
+            --danger-bg: #2a1515; --danger-border: #3a1a1a; --danger-hover-bg: #3a1a1a;
+            --toast-ok-bg: #1a2e1a; --toast-ok-border: #1f3a1f;
+            --toast-err-bg: #2e1a1a; --toast-err-border: #3a1f1f;
+            --toast-info-bg: #1a1f2e; --toast-info-border: #1f2a3a;
+            --card-hover-bdr: #3a3a4e; --hero-glow: rgba(232,155,32,.06);
+            --preview-from: #1a1a2e; --preview-to: #16213e;
         }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Dynamic Background */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out;
-        }
-
-        .orb-1 {
-            top: -10%;
-            left: -10%;
-            width: 600px;
-            height: 600px;
-            background: var(--primary);
-        }
-
-        .orb-2 {
-            bottom: -10%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: var(--secondary);
-            animation-delay: -5s;
-        }
-
-        .orb-3 {
-            top: 40%;
-            left: 40%;
-            width: 300px;
-            height: 300px;
-            background: var(--accent);
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-        }
-
-        /* Navigation */
-        nav {
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 100;
-        }
-
-        .brand {
-            font-weight: 800;
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, #fff, #a5b4fc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.03em;
-            cursor: pointer;
-        }
-
-        .nav-back {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .nav-back:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Main Content Area */
-        main {
-            flex: 1;
-            position: relative;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Mode Selection (Landing) - now includes 6 cards */
-        .mode-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            width: 100%;
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .mode-card {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .mode-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-            pointer-events: none;
-        }
-
-        .mode-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        .mode-card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 3.2rem;
-            margin-bottom: 1.2rem;
-            display: inline-block;
-            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
-        }
-
-        .card-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            color: #fff;
-        }
-
-        .card-desc {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 0.95rem;
-            flex-grow: 1;
-        }
-
-        /* Special style for Kriz cards (non-workspace) */
-        .kriz-action-card {
-            cursor: default; /* not opening workspace */
-        }
-        .kriz-action-card .card-icon {
-            font-size: 3rem;
-        }
-        .kriz-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.7rem 1.8rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            letter-spacing: 0.03em;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(129, 140, 248, 0.3);
-            margin-top: 1.2rem;
-            width: fit-content;
-            align-self: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .kriz-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(129, 140, 248, 0.5);
-        }
-
-        /* Workspaces */
-        .workspace {
-            display: none;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 3rem;
-            backdrop-filter: blur(20px);
-            animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .workspace.active {
-            display: block;
-        }
-
-        .workspace-header {
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
-
-        .workspace-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #fff, #cbd5e1);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* Form Elements */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1rem;
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        textarea {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(2, 6, 23, 0.8);
-            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.1);
-        }
-
-        /* File Upload */
-        .file-drop-zone {
-            border: 2px dashed var(--glass-border);
-            border-radius: 16px;
-            padding: 3rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.02);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-drop-zone:hover {
-            border-color: var(--primary);
-            background: rgba(129, 140, 248, 0.05);
-        }
-
-        .file-drop-zone input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .drop-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-        }
-
-        .drop-text {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .preview-image {
-            max-width: 100%;
-            max-height: 300px;
-            margin-top: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: none;
-        }
-
-        /* Buttons */
-        .btn {
-            width: 100%;
-            padding: 1.2rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(129, 140, 248, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(129, 140, 248, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            border: 1px solid var(--glass-border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Radio Group */
-        .radio-group {
-            display: flex;
-            gap: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.5rem;
-            border-radius: 12px;
-            width: fit-content;
-        }
-
-        .radio-option {
-            position: relative;
-        }
-
-        .radio-option input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .radio-option span {
-            display: block;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-muted);
-            transition: all 0.3s;
-        }
-
-        .radio-option input:checked+span {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Code Block */
-        pre {
-            background: #0f172a;
-            padding: 1.5rem;
-            border-radius: 12px;
-            overflow-x: auto;
-            border: 1px solid var(--glass-border);
-            margin-top: 1.5rem;
-            position: relative;
-        }
-
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            color: #a5b4fc;
-            font-size: 0.85rem;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 4rem;
-            padding: 2rem;
-            text-align: center;
-            border-top: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .supported-platforms {
-            margin-bottom: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .supported-platforms span {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .social-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .social-link:hover {
-            color: var(--primary);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        body { background: var(--bg); color: var(--txt); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; overflow-x: hidden; transition: background-color .3s, color .3s; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--surface); } ::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 3px; }
+        input, textarea, select { background: var(--elevated); border: 1px solid var(--bdr); color: var(--txt); border-radius: 8px; padding: 10px 14px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; width: 100%; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,155,32,.15); }
+        textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; border: none; cursor: pointer; transition: all .2s; }
+        .btn-primary { background: var(--accent); color: #0b0b0e; } .btn-primary:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,155,32,.3); }
+        .btn-secondary { background: var(--elevated); color: var(--txt); border: 1px solid var(--bdr); } .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger { background: var(--danger-bg); color: #e84848; border: 1px solid var(--danger-border); } .btn-danger:hover { background: var(--danger-hover-bg); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .section-card { background: var(--surface); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; margin-bottom: 16px; transition: border-color .3s; }
+        .section-card:hover { border-color: var(--card-hover-bdr); }
+        .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background .2s; }
+        .section-header:hover { background: var(--elevated); }
+        .section-header h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .section-header i.chevron { transition: transform .3s; font-size: 12px; color: var(--muted); }
+        .section-header.collapsed i.chevron { transform: rotate(-90deg); }
+        .section-body { padding: 0 20px 20px; display: grid; gap: 16px; }
+        .section-body.hidden { display: none; }
+        .tab-btn { padding: 12px 24px; font-weight: 600; font-size: 14px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; font-family: 'Space Grotesk', sans-serif; }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-btn:hover:not(.active) { color: var(--txt); }
+        .drop-zone { border: 2px dashed var(--bdr); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all .3s; background: var(--surface); }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: rgba(232,155,32,.04); }
+        .drop-zone .icon { font-size: 48px; color: var(--muted); margin-bottom: 12px; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { padding: 14px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; animation: slideIn .3s ease; box-shadow: 0 8px 30px rgba(0,0,0,.5); max-width: 360px; }
+        .toast-ok { background: var(--toast-ok-bg); color: #30c878; border: 1px solid var(--toast-ok-border); }
+        .toast-err { background: var(--toast-err-bg); color: #e84848; border: 1px solid var(--toast-err-border); }
+        .toast-info { background: var(--toast-info-bg); color: #5b9cf5; border: 1px solid var(--toast-info-border); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--elevated); border: 1px solid var(--bdr); border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--txt); }
+        .tag .remove { cursor: pointer; color: var(--muted); transition: color .2s; font-size: 10px; } .tag .remove:hover { color: var(--err); }
+        .alt-greet-item { background: var(--elevated); border: 1px solid var(--bdr); border-radius: 8px; padding: 12px; position: relative; }
+        .alt-greet-item .remove-btn { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; transition: color .2s; } .alt-greet-item .remove-btn:hover { color: var(--err); }
+        .decoded-field { background: var(--elevated); border: 1px solid var(--bdr); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+        .decoded-field .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--accent); margin-bottom: 6px; }
+        .decoded-field .field-value { font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+        .preview-card { width: 200px; background: var(--elevated); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; transition: transform .3s, box-shadow .3s; }
+        .preview-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,155,32,.1); }
+        .preview-card img { width: 100%; height: 260px; object-fit: cover; }
+        .preview-card .info { padding: 12px; }
+        .preview-card .char-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .preview-card .char-creator { font-size: 11px; color: var(--muted); }
+        .hero-glow { position: fixed; top: -200px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, var(--hero-glow) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+        @media(max-width:768px) { .tab-btn { padding: 10px 14px; font-size: 13px; } .preview-card { width: 160px; } .preview-card img { height: 200px; } }
+        .fade-in { animation: fadeIn .4s ease; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #themeToggle { display: inline-flex; align-items: center; justify-content: center; background: var(--elevated); border: 1px solid var(--bdr); color: var(--muted); cursor: pointer; border-radius: 6px; padding: 4px 8px; font-size: 14px; transition: all .2s; }
+        #themeToggle:hover { border-color: var(--accent); color: var(--accent); }
     </style>
 </head>
+<body data-theme="light">
+    <div class="hero-glow"></div>
+    <div class="toast-container" id="toastContainer"></div>
 
-<body>
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
+    <!-- Header -->
+    <header class="relative z-10 border-b border-bdr" style="background: linear-gradient(180deg, var(--header-from), var(--header-to))">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg" style="background: linear-gradient(135deg, var(--accent), #d47a10)">
+                    <i class="fas fa-hammer" style="color:#0b0b0e"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-xl tracking-tight" style="color:var(--txt)">AiMaker</h1>
+                    <p class="text-xs" style="color:var(--muted)">Character Card V2 Maker</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-mono" style="color:var(--muted)">
+                <span class="px-2 py-1 rounded" style="background:var(--elevated); border: 1px solid var(--bdr)">spec: chara_card_v2</span>
+                <span class="px-2 py-1 rounded" style="background:var(--elevated); border: 1px solid var(--bdr)">v2.0</span>
+                <button id="themeToggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+            </div>
+        </div>
+    </header>
 
-    <nav>
-        <div class="brand" onclick="showHome()">Tavern Card Maker <span
-                style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted); margin-left: 0.5rem;">by
-                altkriz</span></div>
-        <button class="nav-back" id="backBtn" onclick="showHome()">← Back to Home</button>
+    <!-- Tabs -->
+    <nav class="relative z-10 border-b border-bdr" style="background:var(--surface)">
+        <div class="max-w-6xl mx-auto px-4 flex">
+            <button class="tab-btn active" data-tab="creator"><i class="fas fa-wand-magic-sparkles mr-2"></i>Create & Edit</button>
+            <button class="tab-btn" data-tab="decoder"><i class="fas fa-magnifying-glass mr-2"></i>Decode</button>
+        </div>
     </nav>
 
-    <main>
-        <!-- Landing Page with 6 cards (4 original + 2 KrizRP) -->
-        <div id="home">
-            <div class="mode-selector">
-                <!-- Original Creator Card -->
-                <div class="mode-card" onclick="openWorkspace('create')">
-                    <div class="card-icon">✨</div>
-                    <div class="card-title">Character Creator</div>
-                    <div class="card-desc">Design new characters from scratch. Define personality, scenario, and more in
-                        a guided interface.</div>
-                </div>
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-6">
 
-                <!-- Original Forger Card -->
-                <div class="mode-card" onclick="openWorkspace('forge')">
-                    <div class="card-icon">🔨</div>
-                    <div class="card-title">Card Forger</div>
-                    <div class="card-desc">Already have the JSON? Embed it directly into a PNG image to create a valid
-                        Tavern card.</div>
-                </div>
+        <!-- ====== CREATOR TAB ====== -->
+        <div id="tab-creator" class="tab-content fade-in">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Left: Form -->
+                <div class="flex-1 min-w-0">
+                    <!-- Image Upload -->
+                    <div class="section-card">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-image" style="color:var(--accent)"></i> Character Image</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body">
+                            <div class="drop-zone" id="imageDropZone" onclick="document.getElementById('imageInput').click()">
+                                <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp" hidden>
+                                <div class="icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                                <p class="font-semibold mb-1">Drop image here or click to browse</p>
+                                <p class="text-xs" style="color:var(--muted)">PNG recommended. Will be converted to PNG on export.</p>
+                            </div>
+                            <div id="imagePreviewContainer" class="hidden">
+                                <div class="flex items-center gap-4">
+                                    <img id="imagePreviewThumb" class="w-20 h-20 rounded-lg object-cover border border-bdr">
+                                    <div class="flex-1 min-w-0">
+                                        <p id="imageFileName" class="text-sm font-medium truncate"></p>
+                                        <p id="imageFileSize" class="text-xs" style="color:var(--muted)"></p>
+                                    </div>
+                                    <button class="btn btn-danger btn-sm" onclick="removeImage()"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Original Extractor Card -->
-                <div class="mode-card" onclick="openWorkspace('extract')">
-                    <div class="card-icon">🔍</div>
-                    <div class="card-title">Data Extractor</div>
-                    <div class="card-desc">Reveal the hidden soul of a character card. Extract JSON data from any Tavern
-                        PNG.</div>
-                </div>
+                    <!-- Basic Info -->
+                    <div class="section-card">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-id-badge" style="color:var(--accent)"></i> Basic Info</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Character Name *</label><input type="text" id="charName" placeholder="e.g. Aria Nightwhisper" oninput="updatePreview()"></div>
+                                <div><label>Creator</label><input type="text" id="charCreator" placeholder="Your name" oninput="updatePreview()"></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Character Version</label><input type="text" id="charVersion" placeholder="e.g. 1.0"></div>
+                                <div>
+                                    <label>Tags</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="tagInput" placeholder="Add tag + Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag()}">
+                                        <button class="btn btn-secondary btn-sm" onclick="addTag()" style="white-space:nowrap"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                    <div id="tagsContainer" class="flex flex-wrap gap-2 mt-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Original Editor Card -->
-                <div class="mode-card" onclick="openWorkspace('edit')">
-                    <div class="card-icon">✏️</div>
-                    <div class="card-title">Card Editor</div>
-                    <div class="card-desc">Edit existing cards. Load from PNG or JSON, modify contents, and save as new.
+                    <!-- Description & Personality -->
+                    <div class="section-card">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-feather" style="color:var(--accent)"></i> Description & Personality</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body">
+                            <div><label>Description <span class="font-normal text-xs" style="color:var(--muted)">(Traits, appearance, background)</span></label><textarea id="charDescription" rows="5" placeholder="Describe the character in detail..."></textarea></div>
+                            <div><label>Personality <span class="font-normal text-xs" style="color:var(--muted)">(Summary of traits)</span></label><textarea id="charPersonality" rows="3" placeholder="e.g. Calm, analytical, fiercely loyal"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Scenario & Dialogue -->
+                    <div class="section-card">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-comments" style="color:var(--accent)"></i> Scenario & Dialogue</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body">
+                            <div><label>Scenario <span class="font-normal text-xs" style="color:var(--muted)">(The setting/situation)</span></label><textarea id="charScenario" rows="3" placeholder="Describe the scenario..."></textarea></div>
+                            <div><label>First Message <span class="font-normal text-xs" style="color:var(--muted)">(Greeting message)</span></label><textarea id="charFirstMes" rows="5" placeholder="The character's opening message..."></textarea></div>
+                            <div><label>Message Examples <span class="font-normal text-xs" style="color:var(--muted)">(Example dialogues)</span></label><textarea id="charMesExample" rows="4" placeholder="<START>\n{{user}}: Hello\n{{char}}: *smiles* Greetings, traveler."></textarea></div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="mb-0">Alternate Greetings</label>
+                                    <button class="btn btn-secondary btn-sm" onclick="addAltGreeting()"><i class="fas fa-plus"></i> Add</button>
+                                </div>
+                                <div id="altGreetingsContainer" class="grid gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced -->
+                    <div class="section-card">
+                        <div class="section-header collapsed" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-gear" style="color:var(--accent)"></i> Advanced Settings</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body hidden">
+                            <div><label>System Prompt <span class="font-normal text-xs" style="color:var(--muted)">(Instructions for the AI)</span></label><textarea id="charSystemPrompt" rows="4" placeholder="Write system-level instructions..."></textarea></div>
+                            <div><label>Post History Instructions <span class="font-normal text-xs" style="color:var(--muted)">(Injected after chat history)</span></label><textarea id="charPostHistory" rows="3" placeholder="Instructions injected after conversation history..."></textarea></div>
+                            <div><label>Creator Notes <span class="font-normal text-xs" style="color:var(--muted)">(Notes for other users)</span></label><textarea id="charCreatorNotes" rows="3" placeholder="Any notes about the character..."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Extensions -->
+                    <div class="section-card">
+                        <div class="section-header collapsed" onclick="toggleSection(this)">
+                            <h3><i class="fas fa-puzzle-piece" style="color:var(--accent)"></i> Extensions</h3>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="section-body hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label>Depth Prompt — Content</label><textarea id="extDepthPrompt" rows="2" placeholder="Prompt injected at depth..."></textarea></div>
+                                <div><label>Depth Prompt — Depth</label><input type="number" id="extDepth" placeholder="0-999" min="0" max="999" value="4"></div>
+                            </div>
+                            <div><label>Talkativeness <span class="font-normal text-xs" style="color:var(--muted)">0.0 — 1.0</span></label><input type="number" id="extTalkativeness" placeholder="0.5" min="0" max="1" step="0.1"></div>
+                            <div><label>Custom Extensions JSON <span class="font-normal text-xs" style="color:var(--muted)">(Merged with above)</span></label><textarea id="extCustomJson" rows="4" placeholder='{"your_extension_key": "value"}' style="font-family:'JetBrains Mono',monospace; font-size:12px"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-3 mt-2 mb-8">
+                        <button class="btn btn-primary" onclick="exportPng()"><i class="fas fa-download"></i> Export PNG Card</button>
+                        <button class="btn btn-secondary" onclick="exportJson()"><i class="fas fa-code"></i> Export JSON</button>
+                        <button class="btn btn-secondary" onclick="loadCard()"><i class="fas fa-upload"></i> Load Card</button>
+                        <button class="btn btn-danger" onclick="clearForm()"><i class="fas fa-eraser"></i> Clear</button>
+                        <input type="file" id="loadCardInput" accept="image/png,.png,application/json,.json" hidden>
                     </div>
                 </div>
 
-                <!-- NEW: KrizRP Telegram Bot Card (no workspace, just link) -->
-                <div class="mode-card kriz-action-card">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">KrizRP Telegram</div>
-                    <div class="card-desc">Chat with your created characters directly on Telegram. Seamless import from Tavern cards, persistent chats, and a growing library.</div>
-                    <a href="https://t.me/krizrpbot" target="_blank" class="kriz-btn">Try Bot →</a>
-                </div>
-
-                <!-- NEW: KrizRP Studio Card (no workspace, just link) -->
-                <div class="mode-card kriz-action-card">
-                    <div class="card-icon">🎭</div>
-                    <div class="card-title">KrizRP Studio</div>
-                    <div class="card-desc">Thousands of characters, powerful search, full compatibility. Upload cards made here, discover new personas, and dive in.</div>
-                    <a href="https://kriztech.in/krizrp" target="_blank" class="kriz-btn">Open Studio →</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Creator Workspace -->
-        <div id="create" class="workspace">
-            <div class="workspace-header">
-                <div class="workspace-title">Character Creator</div>
-                <p style="color: var(--text-muted)">Weave the threads of a new persona</p>
-            </div>
-
-            <form id="createForm">
-                <div class="form-grid">
-                    <div class="input-group full-width">
-                        <label>Name</label>
-                        <input type="text" id="c_name" required placeholder="e.g. Eldrin the Sage">
+                <!-- Right: Preview -->
+                <div class="lg:w-56 flex-shrink-0">
+                    <div class="lg:sticky lg:top-6">
+                        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--muted)">Live Preview</p>
+                        <div class="preview-card mx-auto lg:mx-0">
+                            <img id="previewImage" src="" alt="Preview" style="display:none">
+                            <div id="previewPlaceholder" class="w-full flex items-center justify-center" style="height:260px; background: linear-gradient(135deg, var(--preview-from), var(--preview-to))">
+                                <span class="text-5xl font-bold" style="color:var(--accent); opacity:.4" id="previewInitial">?</span>
+                            </div>
+                            <div class="info">
+                                <div class="char-name" id="previewName">Unnamed</div>
+                                <div class="char-creator" id="previewCreator">No creator set</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 rounded-lg text-xs" style="background:var(--surface); border: 1px solid var(--bdr); color: var(--muted)">
+                            <p><i class="fas fa-circle-info mr-1" style="color:var(--accent)"></i> PNG cards embed V2 JSON data inside the image file using tEXt metadata chunks.</p>
+                        </div>
+                        <!-- Promotional Ads -->
+                        <div class="mt-4 p-3 rounded-lg text-xs" style="background: var(--surface); border: 1px solid var(--bdr)">
+                          <p class="font-semibold mb-2 uppercase tracking-wide" style="color: var(--muted); font-size: 10px">
+                            Our Products
+                          </p>
+                          <a href="https://t.me/krizrpbot" target="_blank" class="block p-2 rounded mb-2 hover:bg-elevated transition-colors flex items-center gap-3" style="border: 1px solid var(--bdr); text-decoration: none">
+                            <div class="w-8 h-8 rounded-md flex flex-shrink-0 items-center justify-center" style="background: rgba(43, 161, 219, 0.15); color: #2ba1db; font-size: 16px;">
+                              <i class="fab fa-telegram-plane"></i>
+                            </div>
+                            <div class="min-w-0">
+                              <p class="font-bold text-sm truncate" style="color: var(--txt)">KrizRP Bot</p>
+                              <p class="truncate" style="color: var(--muted); font-size: 10px">Play directly in Telegram</p>
+                            </div>
+                          </a>
+                          <a href="https://kriztech.in/krizrp" target="_blank" class="block p-2 rounded hover:bg-elevated transition-colors flex items-center gap-3" style="border: 1px solid var(--bdr); text-decoration: none">
+                            <div class="w-8 h-8 rounded-md flex flex-shrink-0 items-center justify-center" style="background: rgba(232, 155, 32, 0.15); color: var(--accent); font-size: 16px;">
+                              <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="min-w-0">
+                              <p class="font-bold text-sm truncate" style="color: var(--txt)">KrizRP Studio</p>
+                              <p class="truncate" style="color: var(--muted); font-size: 10px">Web Roleplay Platform</p>
+                            </div>
+                          </a>
+                        </div>
                     </div>
-
-                    <div class="input-group full-width">
-                        <label>Description</label>
-                        <textarea id="c_description" rows="3"
-                            placeholder="Physical appearance, age, notable features..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Personality</label>
-                        <textarea id="c_personality" rows="3"
-                            placeholder="Traits, quirks, demeanor, likes/dislikes..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>First Message</label>
-                        <textarea id="c_first_mes" rows="4" required
-                            placeholder="The opening line when a chat begins..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Scenario</label>
-                        <textarea id="c_scenario" rows="2"
-                            placeholder="Current situation, location, or context..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Message Examples</label>
-                        <textarea id="c_mes_example" rows="6"
-                            placeholder="<START>&#10;{{user}}: Hello&#10;{{char}}: Greetings, traveler."></textarea>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Creator Name</label>
-                        <input type="text" id="c_creator" placeholder="Your Alias">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Tags</label>
-                        <input type="text" id="c_tags" placeholder="Fantasy, Elf, Magic (comma separated)">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Character Version</label>
-                        <input type="text" id="c_character_version" placeholder="e.g. 1.0 or main">
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Creator Notes</label>
-                        <textarea id="c_creator_notes" rows="3"
-                            placeholder="Notes from the creator..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>System Prompt</label>
-                        <textarea id="c_system_prompt" rows="3"
-                            placeholder="Special instructions for the model..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Post History Instructions</label>
-                        <textarea id="c_post_history_instructions" rows="3"
-                            placeholder="In-chat instructions appended to history..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Alternate Greetings</label>
-                        <textarea id="c_alternate_greetings" rows="4"
-                            placeholder="Alternative opening messages (one per line)..."></textarea>
-                    </div>
-                </div>
-
-                <div class="input-group" style="margin-top: 2rem;">
-                    <label>Card Specification</label>
-                    <select id="c_spec_format" style="width: fit-content;">
-                        <option value="v2" selected>Character Card V2 (Default)</option>
-                        <option value="v3">Character Card V3</option>
-                    </select>
-                </div>
-
-                <div class="input-group" style="margin-top: 1rem;">
-                    <label>Output Format</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="download_type" value="json" checked
-                                onchange="toggleCreateImage(false)">
-                            <span>JSON File</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="download_type" value="png" onchange="toggleCreateImage(true)">
-                            <span>Embed in PNG</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div id="create-image-upload" class="input-group" style="display: none;">
-                    <label>Base Image</label>
-                    <div class="file-drop-zone">
-                        <input type="file" id="create_img" accept="image/png"
-                            onchange="previewFile(this, 'create_preview')">
-                        <div class="drop-icon">🖼️</div>
-                        <div class="drop-text">Click or Drag a PNG image here</div>
-                        <img id="create_preview" class="preview-image">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Generate Character</button>
-            </form>
-        </div>
-
-        <!-- Forger Workspace -->
-        <div id="forge" class="workspace">
-            <div class="workspace-header">
-                <div class="workspace-title">Card Forger</div>
-                <p style="color: var(--text-muted)">Fuse data into imagery</p>
-            </div>
-
-            <form id="forgeForm">
-                <div class="input-group">
-                    <label>Source Image</label>
-                    <div class="file-drop-zone">
-                        <input type="file" id="forge_img" accept="image/png" required
-                            onchange="previewFile(this, 'forge_preview')">
-                        <div class="drop-icon">📁</div>
-                        <div class="drop-text">Upload the PNG to be infused</div>
-                        <img id="forge_preview" class="preview-image">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Character Data (JSON)</label>
-                    <textarea id="forge_json" rows="12" required
-                        placeholder='{ "name": "...", "description": "..." }'></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>Card Specification</label>
-                    <select id="f_spec_format" style="width: fit-content;">
-                        <option value="v2" selected>Character Card V2 (Default)</option>
-                        <option value="v3">Character Card V3</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Forge Card</button>
-            </form>
-        </div>
-
-        <!-- Extractor Workspace -->
-        <div id="extract" class="workspace">
-            <div class="workspace-header">
-                <div class="workspace-title">Data Extractor</div>
-                <p style="color: var(--text-muted)">Reveal hidden truths</p>
-            </div>
-
-            <form id="extractForm">
-                <div class="input-group">
-                    <label>Character Card</label>
-                    <div class="file-drop-zone">
-                        <input type="file" id="extract_img" accept="image/png" required
-                            onchange="previewFile(this, 'extract_preview')">
-                        <div class="drop-icon">🔍</div>
-                        <div class="drop-text">Upload a Tavern PNG card</div>
-                        <img id="extract_preview" class="preview-image">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Extract Data</button>
-            </form>
-
-            <div id="extractResult" style="display: none; margin-top: 3rem; animation: fadeInUp 0.5s ease;">
-                <label>Extracted Soul (JSON)</label>
-                <pre><code id="json-output"></code></pre>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                    <button type="button" class="btn btn-secondary" onclick="copyToClipboard()">Copy to
-                        Clipboard</button>
-                    <button type="button" class="btn btn-primary" onclick="downloadExtractedJson()">Download
-                        JSON</button>
                 </div>
             </div>
         </div>
-        <div id="edit" class="workspace">
-            <div class="workspace-header">
-                <div class="workspace-title">Card Editor</div>
-                <p style="color: var(--text-muted)">Refine and reshape existing souls</p>
-            </div>
 
-            <!-- Step 1: Upload -->
-            <div id="edit-upload-step">
-                <div class="file-drop-zone">
-                    <input type="file" id="edit_upload_input" accept=".json,image/png"
-                        onchange="handleEditUpload(this)">
-                    <div class="drop-icon">📂</div>
-                    <div class="drop-text">Upload Character Card (PNG) or JSON Data</div>
+        <!-- ====== DECODER TAB ====== -->
+        <div id="tab-decoder" class="tab-content hidden fade-in">
+            <div class="max-w-3xl mx-auto">
+                <div class="drop-zone mb-6" id="decodeDropZone" onclick="document.getElementById('decodeFileInput').click()">
+                    <input type="file" id="decodeFileInput" accept="image/png,.png" hidden>
+                    <div class="icon"><i class="fas fa-file-magnifying-glass"></i></div>
+                    <p class="font-semibold mb-1">Drop character card PNG here to decode</p>
+                    <p class="text-xs" style="color:var(--muted)">Supports chara_card_v2 PNG files with embedded data</p>
+                </div>
+
+                <div id="decodedImageSection" class="hidden mb-6">
+                    <div class="flex items-start gap-4">
+                        <img id="decodedImage" class="w-32 h-40 rounded-lg object-cover border border-bdr">
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold mb-1" id="decodedName"></h2>
+                            <p class="text-sm" style="color:var(--muted)" id="decodedMeta"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="decodedDataSection" class="hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">Decoded Data</h3>
+                        <div class="flex gap-2">
+                            <button class="btn btn-secondary btn-sm" onclick="copyDecodedJson()"><i class="fas fa-copy"></i> Copy JSON</button>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadDecodedJson()"><i class="fas fa-download"></i> Download JSON</button>
+                            <button class="btn btn-primary btn-sm" onclick="editDecodedCard()"><i class="fas fa-pen"></i> Edit this card</button>
+                        </div>
+                    </div>
+                    <div id="decodedFields"></div>
+                </div>
+
+                <div id="decodedRawSection" class="hidden mt-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="mb-0">Raw JSON</label>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleRawJson()"><i class="fas fa-code"></i> Toggle</button>
+                    </div>
+                    <pre id="decodedRawJson" class="hidden" style="background:var(--elevated); border: 1px solid var(--bdr); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto; color: var(--muted)"></pre>
                 </div>
             </div>
-
-            <!-- Step 2: Edit Form (Initially Hidden) -->
-            <form id="editForm" style="display: none;">
-                <div class="form-grid">
-                    <div class="input-group full-width">
-                        <label>Name</label>
-                        <input type="text" id="e_name" required placeholder="e.g. Eldrin the Sage">
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Description</label>
-                        <textarea id="e_description" rows="3"
-                            placeholder="Physical appearance, age, notable features..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Personality</label>
-                        <textarea id="e_personality" rows="3"
-                            placeholder="Traits, quirks, demeanor, likes/dislikes..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>First Message</label>
-                        <textarea id="e_first_mes" rows="4" required
-                            placeholder="The opening line when a chat begins..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Scenario</label>
-                        <textarea id="e_scenario" rows="2"
-                            placeholder="Current situation, location, or context..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Message Examples</label>
-                        <textarea id="e_mes_example" rows="6"
-                            placeholder="<START>&#10;{{user}}: Hello&#10;{{char}}: Greetings, traveler."></textarea>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Creator Name</label>
-                        <input type="text" id="e_creator" placeholder="Your Alias">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Tags</label>
-                        <input type="text" id="e_tags" placeholder="Fantasy, Elf, Magic (comma separated)">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Character Version</label>
-                        <input type="text" id="e_character_version" placeholder="e.g. 1.0 or main">
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Creator Notes</label>
-                        <textarea id="e_creator_notes" rows="3"
-                            placeholder="Notes from the creator..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>System Prompt</label>
-                        <textarea id="e_system_prompt" rows="3"
-                            placeholder="Special instructions for the model..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Post History Instructions</label>
-                        <textarea id="e_post_history_instructions" rows="3"
-                            placeholder="In-chat instructions appended to history..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Alternate Greetings</label>
-                        <textarea id="e_alternate_greetings" rows="4"
-                            placeholder="Alternative opening messages (one per line)..."></textarea>
-                    </div>
-                </div>
-
-                <div class="input-group" style="margin-top: 2rem;">
-                    <label>Card Specification</label>
-                    <select id="e_spec_format" style="width: fit-content;">
-                        <option value="v2" selected>Character Card V2 (Default)</option>
-                        <option value="v3">Character Card V3</option>
-                    </select>
-                </div>
-
-                <div class="input-group" style="margin-top: 1rem;">
-                    <label>Output Format</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="e_download_type" value="json" checked
-                                onchange="toggleEditImage(false)">
-                            <span>JSON File</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="e_download_type" value="png" onchange="toggleEditImage(true)">
-                            <span>Embed in PNG</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div id="edit-image-upload" class="input-group" style="display: none;">
-                    <label>Base Image</label>
-                    <div class="file-drop-zone">
-                        <input type="file" id="edit_img" accept="image/png"
-                            onchange="previewFile(this, 'edit_preview')">
-                        <div class="drop-icon">🖼️</div>
-                        <div class="drop-text">Click to change base image</div>
-                        <img id="edit_preview" class="preview-image">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Changes</button>
-                <button type="button" class="btn btn-secondary" style="margin-top: 1rem;" onclick="resetEdit()">Cancel /
-                    Load Another</button>
-            </form>
         </div>
     </main>
 
-    <footer>
-        <div class="supported-platforms">
-            Fully compatible with <span>Chub.ai</span>, <span>JanitorAI</span>, <span>Agnai.chat</span>,
-            <span>SillyTavern</span>, and other Tavern-supported platforms.
-        </div>
-
-        <div class="social-links">
-            <a href="https://x.com/altkriz/" target="_blank" class="social-link">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-                Twitter/X
-            </a>
-            <a href="https://instagram.com/altkriz" target="_blank" class="social-link">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-                Instagram
-            </a>
-            <a href="https://github.com/altkriz" target="_blank" class="social-link">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-                GitHub
-            </a>
-            <a href="https://altkriz.github.io/" target="_blank" class="social-link">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                </svg>
-                Website
-            </a>
-        </div>
+    <footer style="padding: 40px 20px; text-align: center; border-top: 1px solid var(--bdr); margin-top: 40px;">
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+        Built by <span style="color: var(--txt); font-weight: 500;">altkriz</span>
+      </p>
+      <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <a href="https://x.com/altkriz" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i class="fab fa-x-twitter"></i> Twitter/X</a>
+        <a href="https://instagram.com/altkriz" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="https://github.com/altkriz" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i class="fab fa-github"></i> GitHub</a>
+        <a href="https://altkriz.github.io/" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i class="fas fa-globe"></i> Website</a>
+      </div>
     </footer>
 
+    <canvas id="defaultCanvas" width="400" height="600" style="display:none"></canvas>
+
     <script>
-        // --- CRC32 Implementation ---
-        const crcTable = [];
+        /* ==================== THEME ==================== */
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('aimaker-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('aimaker-theme', 'dark');
+            }
+        }
+        (function initTheme() {
+            const saved = localStorage.getItem('aimaker-theme');
+            if (saved) document.body.setAttribute('data-theme', saved);
+            requestAnimationFrame(function() {
+                const icon = document.getElementById('themeIcon');
+                if (icon) icon.className = document.body.getAttribute('data-theme') === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            });
+        })();
+
+        /* ==================== STATE ==================== */
+        let uploadedImagePng = null;
+        let uploadedImageUrl = null;
+        let currentTags = [];
+        let altGreetingCount = 0;
+        let decodedCardData = null;
+        let decodedCardPng = null;
+
+        /* ==================== CRC32 IMPLEMENTATION ==================== */
+        const crcTable = new Uint32Array(256);
         for (let n = 0; n < 256; n++) {
             let c = n;
-            for (let k = 0; k < 8; k++) {
-                if (c & 1) c = 0xedb88320 ^ (c >>> 1);
-                else c = c >>> 1;
-            }
+            for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
             crcTable[n] = c;
         }
-
         function crc32(buf) {
-            let crc = 0 ^ (-1);
-            for (let i = 0; i < buf.length; i++) {
-                crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xFF];
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < buf.length; i++) crc = crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8);
+            return (crc ^ 0xFFFFFFFF) >>> 0;
+        }
+
+        /* ==================== PNG CHUNK UTILITIES ==================== */
+        function readPngChunks(bytes) {
+            if (bytes.length < 8) throw new Error('File too small to be a PNG');
+            const sig = [137, 80, 78, 71, 13, 10, 26, 10];
+            for (let i = 0; i < 8; i++) if (bytes[i] !== sig[i]) throw new Error('Not a valid PNG file');
+            const chunks = [];
+            let offset = 8;
+            while (offset < bytes.length) {
+                if (offset + 8 > bytes.length) break;
+                const dv = new DataView(bytes.buffer || bytes, offset, 4);
+                const len = dv.getUint32(0, false);
+                const type = String.fromCharCode(bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]);
+                chunks.push({ offset, dataLen: len, type, start: offset, end: offset + 12 + len });
+                offset += 12 + len;
             }
-            return (crc ^ (-1)) >>> 0;
+            return chunks;
         }
 
-        // --- PNG Utilities ---
-        function stringToUint8Array(str) {
-            const arr = new Uint8Array(str.length);
-            for (let i = 0; i < str.length; i++) arr[i] = str.charCodeAt(i);
-            return arr;
+        function extractCharaFromPng(bytes) {
+            const chunks = readPngChunks(bytes);
+            for (const ch of chunks) {
+                if (ch.type === 'tEXt') {
+                    let kwEnd = ch.offset + 8;
+                    while (kwEnd < ch.offset + 8 + ch.dataLen && bytes[kwEnd] !== 0) kwEnd++;
+                    const kw = new TextDecoder('latin1').decode(bytes.slice(ch.offset + 8, kwEnd));
+                    if (kw === 'chara') {
+                        const valStart = kwEnd + 1;
+                        const valEnd = ch.offset + 8 + ch.dataLen;
+                        const b64 = new TextDecoder('latin1').decode(bytes.slice(valStart, valEnd));
+                        return decodeCharaBase64(b64);
+                    }
+                }
+            }
+            return null;
         }
 
-        function uint8ArrayToString(arr) {
-            let str = '';
-            for (let i = 0; i < arr.length; i++) str += String.fromCharCode(arr[i]);
-            return str;
+        function createTextChunk(keyword, value) {
+            const enc = new TextEncoder();
+            const kwBytes = enc.encode(keyword);
+            const valBytes = enc.encode(value);
+            const chunkData = new Uint8Array(kwBytes.length + 1 + valBytes.length);
+            chunkData.set(kwBytes, 0);
+            chunkData[kwBytes.length] = 0;
+            chunkData.set(valBytes, kwBytes.length + 1);
+            const typeBytes = new Uint8Array([0x74, 0x45, 0x58, 0x74]); // tEXt
+            const crcInput = new Uint8Array(4 + chunkData.length);
+            crcInput.set(typeBytes, 0);
+            crcInput.set(chunkData, 4);
+            const crcVal = crc32(crcInput);
+            const chunk = new Uint8Array(4 + 4 + chunkData.length + 4);
+            const dv = new DataView(chunk.buffer);
+            dv.setUint32(0, chunkData.length, false);
+            chunk[4] = 0x74; chunk[5] = 0x45; chunk[6] = 0x58; chunk[7] = 0x74;
+            chunk.set(chunkData, 8);
+            dv.setUint32(chunk.length - 4, crcVal, false);
+            return chunk;
         }
 
-        function concatUint8Arrays(arrays) {
-            let totalLength = 0;
-            for (let arr of arrays) totalLength += arr.length;
-            const result = new Uint8Array(totalLength);
+        function encodeCharaBase64(jsonStr) {
+            const bytes = new TextEncoder().encode(jsonStr);
+            const bin = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+            return btoa(bin);
+        }
+
+        function decodeCharaBase64(b64) {
+            try {
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const str = new TextDecoder('utf-8').decode(bytes);
+                return JSON.parse(str);
+            } catch (e) {
+                console.error('Base64 decode error:', e);
+                return null;
+            }
+        }
+
+        /* ==================== FORM <-> DATA ==================== */
+        function gatherCardData() {
+            const data = {
+                spec: "chara_card_v2",
+                spec_version: "2.0",
+                data: {
+                    name: document.getElementById('charName').value || '',
+                    description: document.getElementById('charDescription').value || '',
+                    personality: document.getElementById('charPersonality').value || '',
+                    scenario: document.getElementById('charScenario').value || '',
+                    first_mes: document.getElementById('charFirstMes').value || '',
+                    mes_example: document.getElementById('charMesExample').value || '',
+                    creator_notes: document.getElementById('charCreatorNotes').value || '',
+                    system_prompt: document.getElementById('charSystemPrompt').value || '',
+                    post_history_instructions: document.getElementById('charPostHistory').value || '',
+                    alternate_greetings: gatherAltGreetings(),
+                    tags: [...currentTags],
+                    creator: document.getElementById('charCreator').value || '',
+                    character_version: document.getElementById('charVersion').value || '',
+                    extensions: gatherExtensions()
+                }
+            };
+            return data;
+        }
+
+        function gatherAltGreetings() {
+            const greets = [];
+            document.querySelectorAll('.alt-greet-textarea').forEach(el => {
+                if (el.value.trim()) greets.push(el.value);
+            });
+            return greets;
+        }
+
+        function gatherExtensions() {
+            const ext = {};
+            const depthPromptContent = document.getElementById('extDepthPrompt').value;
+            const depthPromptDepth = parseInt(document.getElementById('extDepth').value) || 4;
+            if (depthPromptContent) {
+                ext.depth_prompt = { prompt: depthPromptContent, depth: depthPromptDepth };
+            }
+            const talk = parseFloat(document.getElementById('extTalkativeness').value);
+            if (!isNaN(talk)) ext.talkativeness = talk;
+
+            const customJsonStr = document.getElementById('extCustomJson').value.trim();
+            if (customJsonStr) {
+                try {
+                    const custom = JSON.parse(customJsonStr);
+                    if (typeof custom === 'object' && custom !== null) {
+                        Object.assign(ext, custom);
+                    }
+                } catch (e) { /* ignore invalid json */ }
+            }
+            return ext;
+        }
+
+        function populateForm(data) {
+            const d = data.data ? data.data : data;
+            document.getElementById('charName').value = d.name || '';
+            document.getElementById('charCreator').value = d.creator || '';
+            document.getElementById('charVersion').value = d.character_version || '';
+            document.getElementById('charDescription').value = d.description || '';
+            document.getElementById('charPersonality').value = d.personality || '';
+            document.getElementById('charScenario').value = d.scenario || '';
+            document.getElementById('charFirstMes').value = d.first_mes || '';
+            document.getElementById('charMesExample').value = d.mes_example || '';
+            document.getElementById('charCreatorNotes').value = d.creator_notes || '';
+            document.getElementById('charSystemPrompt').value = d.system_prompt || '';
+            document.getElementById('charPostHistory').value = d.post_history_instructions || '';
+
+            currentTags = Array.isArray(d.tags) ? [...d.tags] : [];
+            renderTags();
+
+            // Clear and populate alt greetings
+            document.getElementById('altGreetingsContainer').innerHTML = '';
+            altGreetingCount = 0;
+            if (Array.isArray(d.alternate_greetings)) {
+                d.alternate_greetings.forEach(g => addAltGreeting(g));
+            }
+
+            // Extensions
+            const ext = d.extensions || {};
+            if (ext.depth_prompt) {
+                document.getElementById('extDepthPrompt').value = ext.depth_prompt.prompt || '';
+                document.getElementById('extDepth').value = ext.depth_prompt.depth || 4;
+            } else {
+                document.getElementById('extDepthPrompt').value = '';
+                document.getElementById('extDepth').value = 4;
+            }
+            document.getElementById('extTalkativeness').value = ext.talkativeness !== undefined ? ext.talkativeness : '';
+
+            const extCopy = { ...ext };
+            delete extCopy.depth_prompt;
+            delete extCopy.talkativeness;
+            document.getElementById('extCustomJson').value = Object.keys(extCopy).length > 0 ? JSON.stringify(extCopy, null, 2) : '';
+
+            updatePreview();
+        }
+
+        /* ==================== PNG PROCESSING ==================== */
+        async function getPngBytes(file) {
+            if (file.type === 'image/png') {
+                const buffer = await file.arrayBuffer();
+                return new Uint8Array(buffer);
+            } else {
+                // Convert non-PNG to PNG via canvas
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.naturalWidth;
+                        canvas.height = img.naturalHeight;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        canvas.toBlob(blob => {
+                            blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf))).catch(reject);
+                        }, 'image/png');
+                        URL.revokeObjectURL(img.src);
+                    };
+                    img.onerror = reject;
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+        }
+
+        function generateDefaultPng() {
+            const canvas = document.getElementById('defaultCanvas');
+            const ctx = canvas.getContext('2d');
+            const name = document.getElementById('charName').value || 'Character';
+            const initial = name.charAt(0).toUpperCase();
+
+            // Random color based on name
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            const hue = Math.abs(hash) % 360;
+
+            const grad = ctx.createLinearGradient(0, 0, 400, 600);
+            grad.addColorStop(0, `hsl(${hue}, 40%, 18%)`);
+            grad.addColorStop(1, `hsl(${(hue + 40) % 360}, 50%, 12%)`);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 400, 600);
+
+            // Decorative circles
+            ctx.globalAlpha = 0.06;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.arc(100 + i * 70, 200 + (i % 3) * 100, 80 + i * 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            ctx.fillStyle = 'rgba(232, 155, 32, 0.8)';
+            ctx.font = 'bold 200px Space Grotesk, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(initial, 200, 280);
+
+            ctx.fillStyle = 'rgba(228, 228, 240, 0.6)';
+            ctx.font = '24px Space Grotesk, sans-serif';
+            ctx.fillText(name.substring(0, 20), 200, 450);
+
+            // Get PNG bytes
+            const dataUrl = canvas.toDataURL('image/png');
+            const b64 = dataUrl.split(',')[1];
+            const bin = atob(b64);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return bytes;
+        }
+
+        function embedCharaInPng(pngBytes, cardDataJson) {
+            const b64 = encodeCharaBase64(cardDataJson);
+            const charaChunk = createTextChunk('chara', b64);
+            const chunks = readPngChunks(pngBytes);
+
+            const parts = [];
+            // 1. PNG signature
+            parts.push(pngBytes.slice(0, 8));
+            // 2. IHDR chunk (always first)
+            const ihdr = chunks.find(c => c.type === 'IHDR');
+            if (!ihdr) throw new Error('Invalid PNG: no IHDR chunk');
+            parts.push(pngBytes.slice(ihdr.start, ihdr.end));
+            // 3. Our tEXt chunk right after IHDR
+            parts.push(charaChunk);
+            // 4. All remaining chunks (skip existing chara tEXt chunks)
+            for (const ch of chunks) {
+                if (ch.type === 'IHDR') continue;
+                if (ch.type === 'tEXt') {
+                    // Check if it's a chara chunk, if so skip it
+                    let kwEnd = ch.offset + 8;
+                    while (kwEnd < ch.offset + 8 + ch.dataLen && pngBytes[kwEnd] !== 0) kwEnd++;
+                    const kw = new TextDecoder('latin1').decode(pngBytes.slice(ch.offset + 8, kwEnd));
+                    if (kw === 'chara') continue;
+                }
+                parts.push(pngBytes.slice(ch.start, ch.end));
+            }
+            // Calculate total length
+            let totalLen = 0;
+            parts.forEach(p => totalLen += p.length);
+            const result = new Uint8Array(totalLen);
             let offset = 0;
-            for (let arr of arrays) {
-                result.set(arr, offset);
-                offset += arr.length;
-            }
+            parts.forEach(p => { result.set(p, offset); offset += p.length; });
             return result;
         }
 
-        function writeUint32(val) {
-            const arr = new Uint8Array(4);
-            arr[0] = (val >>> 24) & 0xff;
-            arr[1] = (val >>> 16) & 0xff;
-            arr[2] = (val >>> 8) & 0xff;
-            arr[3] = val & 0xff;
-            return arr;
-        }
+        /* ==================== EXPORT FUNCTIONS ==================== */
+        async function exportPng() {
+            const name = document.getElementById('charName').value.trim();
+            if (!name) { showToast('Character name is required.', 'err'); return; }
 
-        function readUint32(arr, offset) {
-            return (arr[offset] << 24) | (arr[offset + 1] << 16) | (arr[offset + 2] << 8) | arr[offset + 3];
-        }
-
-        // --- Core Logic ---
-
-        async function extractDataFromPNG(file) {
-            const buffer = await file.arrayBuffer();
-            const view = new Uint8Array(buffer);
-
-            // Check Signature
-            const signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-            for (let i = 0; i < 8; i++) {
-                if (view[i] !== signature[i]) throw new Error("Invalid PNG signature");
+            let pngBytes;
+            if (uploadedImagePng) {
+                pngBytes = uploadedImagePng;
+            } else {
+                await document.fonts.ready; // Wait for fonts in default image
+                pngBytes = generateDefaultPng();
             }
 
-            let offset = 8;
-            while (offset < view.length) {
-                const length = readUint32(view, offset);
-                const type = uint8ArrayToString(view.slice(offset + 4, offset + 8));
+            const cardData = gatherCardData();
+            const cardJson = JSON.stringify(cardData, null, 2);
+            const resultBytes = embedCharaInPng(pngBytes, cardJson);
 
-                if (type === 'tEXt') {
-                    const data = view.slice(offset + 8, offset + 8 + length);
-                    const text = uint8ArrayToString(data);
-                    const parts = text.split('\0');
-                    if (parts[0] === 'chara') {
-                        try {
-                            return decodeURIComponent(escape(atob(parts[1])));
-                        } catch (e) {
-                            return atob(parts[1]);
-                        }
-                    }
-                }
-
-                offset += 12 + length; // Length(4) + Type(4) + Data(Len) + CRC(4)
-            }
-            throw new Error("No character data found");
-        }
-
-        async function embedDataInPNG(file, jsonData) {
-            const buffer = await file.arrayBuffer();
-            const view = new Uint8Array(buffer);
-
-            // Prepare new chunk
-            const keyword = "chara";
-            const base64Data = btoa(unescape(encodeURIComponent(jsonData)));
-            const textData = stringToUint8Array(keyword + '\0' + base64Data);
-            const type = stringToUint8Array("tEXt");
-
-            // Calculate CRC
-            const crcInput = concatUint8Arrays([type, textData]);
-            const crc = crc32(crcInput);
-
-            const newChunk = concatUint8Arrays([
-                writeUint32(textData.length),
-                type,
-                textData,
-                writeUint32(crc)
-            ]);
-
-            // Reconstruct PNG
-            const chunks = [];
-            chunks.push(view.slice(0, 8)); // Signature
-
-            let offset = 8;
-            let ihdrFound = false;
-
-            while (offset < view.length) {
-                const length = readUint32(view, offset);
-                const typeStr = uint8ArrayToString(view.slice(offset + 4, offset + 8));
-                const fullChunkSize = 12 + length;
-                const currentChunk = view.slice(offset, offset + fullChunkSize);
-
-                if (typeStr === 'IHDR') {
-                    chunks.push(currentChunk);
-                    chunks.push(newChunk); // Insert after IHDR
-                    ihdrFound = true;
-                } else if (typeStr === 'tEXt') {
-                    // Check if it's existing chara chunk
-                    const data = view.slice(offset + 8, offset + 8 + length);
-                    const text = uint8ArrayToString(data);
-                    if (text.startsWith('chara\0')) {
-                        // Skip existing chara
-                    } else {
-                        chunks.push(currentChunk);
-                    }
-                } else {
-                    chunks.push(currentChunk);
-                }
-
-                offset += fullChunkSize;
-            }
-
-            return new Blob(chunks, { type: 'image/png' });
-        }
-
-        // --- UI Logic ---
-
-        // Navigation
-        function openWorkspace(id) {
-            document.getElementById('home').style.display = 'none';
-            document.querySelectorAll('.workspace').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('backBtn').style.display = 'block';
-
-            // Update URL hash without scrolling
-            history.pushState(null, null, '#' + id);
-        }
-
-        function showHome() {
-            document.querySelectorAll('.workspace').forEach(el => el.classList.remove('active'));
-            document.getElementById('home').style.display = 'grid';
-            document.getElementById('backBtn').style.display = 'none';
-            history.pushState(null, null, 'index.html');
-        }
-
-        function previewFile(input, imgId) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.getElementById(imgId);
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function toggleCreateImage(show) {
-            const el = document.getElementById('create-image-upload');
-            const input = document.getElementById('create_img');
-            el.style.display = show ? 'block' : 'none';
-            if (show) input.setAttribute('required', 'required');
-            else input.removeAttribute('required');
-        }
-
-        function copyToClipboard() {
-            const text = document.getElementById('json-output').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.querySelector('#extractResult .btn-secondary');
-                const originalText = btn.innerText;
-                btn.innerText = 'Copied!';
-                setTimeout(() => btn.innerText = originalText, 2000);
-            });
-        }
-
-        function downloadExtractedJson() {
-            const text = document.getElementById('json-output').innerText;
-            if (!text) return;
-
-            const blob = new Blob([text], { type: 'application/json' });
-            let filename = document.getElementById('extractResult').dataset.filename || 'extracted_character.png';
-
-            // Replace extension with .json
-            filename = filename.replace(/\.[^/.]+$/, "") + ".json";
-
-            downloadBlob(blob, filename);
-        }
-
-        function downloadBlob(blob, filename) {
+            const blob = new Blob([resultBytes], { type: 'image/png' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
+            a.download = (name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'character') + '.png';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            showToast('PNG card exported successfully!', 'ok');
         }
 
-        // --- Event Listeners ---
+        function exportJson() {
+            const name = document.getElementById('charName').value.trim() || 'character';
+            const cardData = gatherCardData();
+            const cardJson = JSON.stringify(cardData, null, 2);
+            const blob = new Blob([cardJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name.replace(/[^a-zA-Z0-9_-]/g, '_') + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('JSON exported successfully!', 'ok');
+        }
 
-        // Extractor
-        document.getElementById('extractForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const file = document.getElementById('extract_img').files[0];
-            if (!file) return;
+        /* ==================== LOAD / IMPORT ==================== */
+        function loadCard() {
+            document.getElementById('loadCardInput').click();
+        }
 
+        async function handleLoadCard(file) {
             try {
-                const jsonStr = await extractDataFromPNG(file);
-                // Pretty print
-                const jsonObj = JSON.parse(jsonStr);
-                document.getElementById('json-output').innerText = JSON.stringify(jsonObj, null, 2);
-
-                const resultDiv = document.getElementById('extractResult');
-                resultDiv.style.display = 'block';
-                resultDiv.dataset.filename = file.name;
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        });
-
-        // Forger
-        document.getElementById('forgeForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const file = document.getElementById('forge_img').files[0];
-            const jsonInput = document.getElementById('forge_json').value;
-
-            try {
-                // Validate JSON
-                let jsonObj = JSON.parse(jsonInput);
-                let innerData = jsonObj.data ? jsonObj.data : jsonObj;
-
-                innerData = {
-                    name: innerData.name || "",
-                    description: innerData.description || "",
-                    personality: innerData.personality || "",
-                    first_mes: innerData.first_mes || "",
-                    avatar: innerData.avatar || "",
-                    mes_example: innerData.mes_example || "",
-                    scenario: innerData.scenario || "",
-                    creator_notes: innerData.creator_notes || "",
-                    system_prompt: innerData.system_prompt || "",
-                    post_history_instructions: innerData.post_history_instructions || "",
-                    alternate_greetings: innerData.alternate_greetings || [],
-                    tags: innerData.tags || [],
-                    creator: innerData.creator || "",
-                    character_version: innerData.character_version || "",
-                    extensions: Object.assign({
-                        fav: false,
-                        chub: {
-                            id: 0,
-                            preset: null,
-                            full_path: "",
-                            extensions: [],
-                            expressions: null,
-                            alt_expressions: {},
-                            background_image: null,
-                            related_lorebooks: []
-                        },
-                        world: "",
-                        talkativeness: ""
-                    }, innerData.extensions || {}),
-                    character_book: innerData.character_book || null
-                };
-
-                const specFormat = document.getElementById('f_spec_format').value;
-                const isV3 = specFormat === 'v3';
-                
-                if (isV3) {
-                    if (!innerData.assets) {
-                        innerData.assets = [{
-                            type: 'icon',
-                            uri: 'ccdefault:',
-                            name: 'main',
-                            ext: 'png'
-                        }];
-                    }
-                    if (!innerData.group_only_greetings) innerData.group_only_greetings = [];
-                    if (!innerData.creation_date) innerData.creation_date = Math.floor(Date.now() / 1000);
-                    innerData.modification_date = Math.floor(Date.now() / 1000);
-                } else {
-                    delete innerData.assets;
-                    delete innerData.group_only_greetings;
-                    delete innerData.creation_date;
-                    delete innerData.modification_date;
-                }
-
-                const cardData = {
-                    spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
-                    spec_version: isV3 ? '3.0' : '2.0',
-                    data: innerData
-                };
-                const finalJson = JSON.stringify(cardData);
-
-                const newBlob = await embedDataInPNG(file, finalJson);
-                downloadBlob(newBlob, 'forged_' + file.name);
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        });
-
-        // Creator
-        document.getElementById('createForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const rawAltGreetings = document.getElementById('c_alternate_greetings').value.split('\n').map(g => g.trim()).filter(g => g !== '');
-
-            const data = {
-                name: document.getElementById('c_name').value,
-                description: document.getElementById('c_description').value,
-                personality: document.getElementById('c_personality').value,
-                first_mes: document.getElementById('c_first_mes').value,
-                avatar: "",
-                mes_example: document.getElementById('c_mes_example').value,
-                scenario: document.getElementById('c_scenario').value,
-                creator_notes: document.getElementById('c_creator_notes').value,
-                system_prompt: document.getElementById('c_system_prompt').value,
-                post_history_instructions: document.getElementById('c_post_history_instructions').value,
-                alternate_greetings: rawAltGreetings,
-                tags: document.getElementById('c_tags').value.split(',').map(t => t.trim()).filter(t => t),
-                creator: document.getElementById('c_creator').value,
-                character_version: document.getElementById('c_character_version').value,
-                extensions: {
-                    fav: false,
-                    chub: {
-                        id: 0,
-                        preset: null,
-                        full_path: "",
-                        extensions: [],
-                        expressions: null,
-                        alt_expressions: {},
-                        background_image: null,
-                        related_lorebooks: []
-                    },
-                    world: "",
-                    talkativeness: ""
-                },
-                character_book: null
-            };
-
-            const specFormat = document.getElementById('c_spec_format').value;
-            const isV3 = specFormat === 'v3';
-
-            if (isV3) {
-                data.assets = [{
-                    type: 'icon',
-                    uri: 'ccdefault:',
-                    name: 'main',
-                    ext: 'png'
-                }];
-                data.group_only_greetings = [];
-                data.creation_date = Math.floor(Date.now() / 1000);
-                data.modification_date = Math.floor(Date.now() / 1000);
-            }
-
-            const card = {
-                spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
-                spec_version: isV3 ? '3.0' : '2.0',
-                data: data
-            };
-
-            const jsonString = JSON.stringify(card, null, 2);
-            const downloadType = document.querySelector('input[name="download_type"]:checked').value;
-
-            if (downloadType === 'json') {
-                const blob = new Blob([jsonString], { type: 'application/json' });
-                downloadBlob(blob, data.name.replace(/[^a-z0-9]/gi, '_') + '.json');
-            } else {
-                const file = document.getElementById('create_img').files[0];
-                if (!file) {
-                    alert("Please select a base image.");
-                    return;
-                }
-                try {
-                    const newBlob = await embedDataInPNG(file, jsonString);
-                    downloadBlob(newBlob, data.name.replace(/[^a-z0-9]/gi, '_') + '.png');
-                } catch (err) {
-                    alert('Error: ' + err.message);
-                }
-            }
-        });
-
-        // --- Card Editor Logic ---
-
-        let currentEditBlob = null; // Store original image blob if available
-        let currentEditOriginalData = null;
-
-        async function handleEditUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            try {
-                let data = null;
-
                 if (file.type === 'application/json' || file.name.endsWith('.json')) {
                     const text = await file.text();
-                    const json = JSON.parse(text);
-                    data = json.data || json; // Handle wrapped or raw
-                    currentEditBlob = null;
-                } else if (file.type === 'image/png') {
-                    const jsonStr = await extractDataFromPNG(file);
-                    const json = JSON.parse(jsonStr);
-                    data = json.data || json;
-
-                    // Set preview
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const img = document.getElementById('edit_preview');
-                        img.src = e.target.result;
-                        img.style.display = 'block';
+                    const data = JSON.parse(text);
+                    populateForm(data);
+                    showToast('JSON card loaded!', 'ok');
+                } else if (file.type === 'image/png' || file.name.endsWith('.png')) {
+                    const bytes = new Uint8Array(await file.arrayBuffer());
+                    const charaData = extractCharaFromPng(bytes);
+                    if (charaData) {
+                        populateForm(charaData);
+                        // Also load the image
+                        uploadedImagePng = bytes;
+                        uploadedImageUrl = URL.createObjectURL(file);
+                        showImagePreview(file.name, file.size);
+                        showToast('PNG card loaded with character data!', 'ok');
+                    } else {
+                        showToast('PNG has no embedded character data. Image loaded anyway.', 'info');
+                        const pngBytes = await getPngBytes(file);
+                        uploadedImagePng = pngBytes;
+                        uploadedImageUrl = URL.createObjectURL(file);
+                        showImagePreview(file.name, file.size);
                     }
-                    reader.readAsDataURL(file);
-                    currentEditBlob = file;
                 } else {
-                    throw new Error("Unsupported file type");
+                    showToast('Unsupported file type. Use PNG or JSON.', 'err');
                 }
-
-                if (!data) throw new Error("Could not parse character data");
-                currentEditOriginalData = data;
-
-                // Populate form
-                document.getElementById('e_name').value = data.name || '';
-                document.getElementById('e_description').value = data.description || '';
-                document.getElementById('e_personality').value = data.personality || '';
-                document.getElementById('e_first_mes').value = data.first_mes || '';
-                document.getElementById('e_scenario').value = data.scenario || '';
-                document.getElementById('e_mes_example').value = data.mes_example || '';
-                document.getElementById('e_creator').value = data.creator || '';
-                document.getElementById('e_tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || '');
-
-                document.getElementById('e_creator_notes').value = data.creator_notes || '';
-                document.getElementById('e_system_prompt').value = data.system_prompt || '';
-                document.getElementById('e_post_history_instructions').value = data.post_history_instructions || '';
-                document.getElementById('e_alternate_greetings').value = Array.isArray(data.alternate_greetings) ? data.alternate_greetings.join('\n') : '';
-                document.getElementById('e_character_version').value = data.character_version || '';
-
-                // Show form
-                document.getElementById('edit-upload-step').style.display = 'none';
-                document.getElementById('editForm').style.display = 'block';
-
-            } catch (err) {
-                alert('Error loading character: ' + err.message);
+            } catch (e) {
+                console.error(e);
+                showToast('Error loading file: ' + e.message, 'err');
             }
         }
 
-        function resetEdit() {
-            document.getElementById('editForm').reset();
-            document.getElementById('editForm').style.display = 'none';
-            document.getElementById('edit-upload-step').style.display = 'block';
-            document.getElementById('edit_img').value = '';
-            document.getElementById('edit_preview').src = '';
-            document.getElementById('edit_preview').style.display = 'none';
-            currentEditBlob = null;
-            currentEditOriginalData = null;
+        function clearForm() {
+            document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
+            document.getElementById('extDepth').value = '4';
+            currentTags = [];
+            renderTags();
+            document.getElementById('altGreetingsContainer').innerHTML = '';
+            altGreetingCount = 0;
+            removeImage();
+            updatePreview();
+            showToast('Form cleared.', 'info');
         }
 
-        function toggleEditImage(show) {
-            const el = document.getElementById('edit-image-upload');
-            el.style.display = show ? 'block' : 'none';
-        }
-
-        document.getElementById('editForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const rawAltGreetings = document.getElementById('e_alternate_greetings').value.split('\n').map(g => g.trim()).filter(g => g !== '');
-
-            let origExtensions = currentEditOriginalData && currentEditOriginalData.extensions ? currentEditOriginalData.extensions : {};
-            let ext = Object.assign({
-                fav: false,
-                chub: {
-                    id: 0,
-                    preset: null,
-                    full_path: "",
-                    extensions: [],
-                    expressions: null,
-                    alt_expressions: {},
-                    background_image: null,
-                    related_lorebooks: []
-                },
-                world: "",
-                talkativeness: ""
-            }, origExtensions);
-
-            let origAvatar = currentEditOriginalData && currentEditOriginalData.avatar ? currentEditOriginalData.avatar : "";
-            let origBook = currentEditOriginalData && currentEditOriginalData.character_book ? currentEditOriginalData.character_book : null;
-
-            const data = {
-                name: document.getElementById('e_name').value,
-                description: document.getElementById('e_description').value,
-                personality: document.getElementById('e_personality').value,
-                first_mes: document.getElementById('e_first_mes').value,
-                avatar: origAvatar,
-                mes_example: document.getElementById('e_mes_example').value,
-                scenario: document.getElementById('e_scenario').value,
-                creator_notes: document.getElementById('e_creator_notes').value,
-                system_prompt: document.getElementById('e_system_prompt').value,
-                post_history_instructions: document.getElementById('e_post_history_instructions').value,
-                alternate_greetings: rawAltGreetings,
-                tags: document.getElementById('e_tags').value.split(',').map(t => t.trim()).filter(t => t),
-                creator: document.getElementById('e_creator').value,
-                character_version: document.getElementById('e_character_version').value,
-                extensions: ext,
-                character_book: origBook
-            };
-
-            const specFormat = document.getElementById('e_spec_format').value;
-            const isV3 = specFormat === 'v3';
-
-            if (isV3) {
-                if (!data.assets) {
-                    data.assets = [{
-                        type: 'icon',
-                        uri: 'ccdefault:',
-                        name: 'main',
-                        ext: 'png'
-                    }];
-                }
-                if (!data.group_only_greetings) data.group_only_greetings = [];
-                if (!data.creation_date) data.creation_date = Math.floor(Date.now() / 1000);
-                data.modification_date = Math.floor(Date.now() / 1000);
-            }
-
-            const card = {
-                spec: isV3 ? 'chara_card_v3' : 'chara_card_v2',
-                spec_version: isV3 ? '3.0' : '2.0',
-                data: data
-            };
-
-            const jsonString = JSON.stringify(card, null, 2);
-            const downloadType = document.querySelector('input[name="e_download_type"]:checked').value;
-
-            if (downloadType === 'json') {
-                const blob = new Blob([jsonString], { type: 'application/json' });
-                downloadBlob(blob, data.name.replace(/[^a-z0-9]/gi, '_') + '.json');
-            } else {
-                let file = document.getElementById('edit_img').files[0];
-
-                // If no new file selected, but we have the original blob from upload
-                if (!file && currentEditBlob) {
-                    file = currentEditBlob;
-                }
-
-                if (!file) {
-                    alert("Please select a base image or ensure original PNG was loaded.");
+        /* ==================== DECODE TAB ==================== */
+        async function handleDecodeFile(file) {
+            try {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                decodedCardPng = bytes;
+                const charaData = extractCharaFromPng(bytes);
+                if (!charaData) {
+                    showToast('No chara_card_v2 data found in this PNG.', 'err');
+                    document.getElementById('decodedImageSection').classList.add('hidden');
+                    document.getElementById('decodedDataSection').classList.add('hidden');
+                    document.getElementById('decodedRawSection').classList.add('hidden');
                     return;
                 }
 
-                try {
-                    const newBlob = await embedDataInPNG(file, jsonString);
-                    downloadBlob(newBlob, data.name.replace(/[^a-z0-9]/gi, '_') + '.png');
-                } catch (err) {
-                    alert('Error: ' + err.message);
-                }
-            }
-        });
+                decodedCardData = charaData;
+                const data = charaData.data || charaData;
 
-        // Handle Back Button & Hash on Load
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash.substring(1);
-            if (['create', 'forge', 'extract', 'edit'].includes(hash)) {
-                openWorkspace(hash);
-            } else {
-                showHome();
-            }
-        });
+                // Show image
+                const blob = new Blob([bytes], { type: 'image/png' });
+                const imgUrl = URL.createObjectURL(blob);
+                document.getElementById('decodedImage').src = imgUrl;
+                document.getElementById('decodedName').textContent = data.name || 'Unknown';
+                document.getElementById('decodedMeta').textContent =
+                    `By ${data.creator || 'Unknown'} • Version ${data.character_version || '?'} • Spec: ${charaData.spec || '?'} v${charaData.spec_version || '?'}`;
+                document.getElementById('decodedImageSection').classList.remove('hidden');
 
-        // Initial Load
-        const hash = window.location.hash.substring(1);
-        if (['create', 'forge', 'extract', 'edit'].includes(hash)) {
-            openWorkspace(hash);
+                // Show fields
+                const fieldsHtml = buildDecodedFieldsHtml(data);
+                document.getElementById('decodedFields').innerHTML = fieldsHtml;
+                document.getElementById('decodedDataSection').classList.remove('hidden');
+
+                // Raw JSON
+                document.getElementById('decodedRawJson').textContent = JSON.stringify(charaData, null, 2);
+                document.getElementById('decodedRawSection').classList.remove('hidden');
+
+                showToast('Character card decoded!', 'ok');
+            } catch (e) {
+                console.error(e);
+                showToast('Error decoding: ' + e.message, 'err');
+            }
         }
+
+        function buildDecodedFieldsHtml(data) {
+            const fields = [
+                { key: 'name', label: 'Name' },
+                { key: 'description', label: 'Description' },
+                { key: 'personality', label: 'Personality' },
+                { key: 'scenario', label: 'Scenario' },
+                { key: 'first_mes', label: 'First Message' },
+                { key: 'mes_example', label: 'Message Examples' },
+                { key: 'creator_notes', label: 'Creator Notes' },
+                { key: 'system_prompt', label: 'System Prompt' },
+                { key: 'post_history_instructions', label: 'Post History Instructions' },
+            ];
+            let html = '';
+            fields.forEach(f => {
+                if (data[f.key]) {
+                    html += `<div class="decoded-field"><div class="field-label">${f.label}</div><div class="field-value">${escapeHtml(data[f.key])}</div></div>`;
+                }
+            });
+            if (data.alternate_greetings && data.alternate_greetings.length > 0) {
+                data.alternate_greetings.forEach((g, i) => {
+                    html += `<div class="decoded-field"><div class="field-label">Alternate Greeting ${i+1}</div><div class="field-value">${escapeHtml(g)}</div></div>`;
+                });
+            }
+            if (data.tags && data.tags.length > 0) {
+                html += `<div class="decoded-field"><div class="field-label">Tags</div><div class="field-value">${data.tags.map(t => `<span class="tag mr-1 mb-1 inline-block">${escapeHtml(t)}</span>`).join(' ')}</div></div>`;
+            }
+            if (data.extensions && Object.keys(data.extensions).length > 0) {
+                const extHtml = escapeHtml(JSON.stringify(data.extensions, null, 2));
+                html += `<div class="decoded-field"><div class="field-label">Extensions</div><div class="field-value" style="font-family:'JetBrains Mono',monospace; font-size:12px">${extHtml}</div></div>`;
+            }
+            return html;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function copyDecodedJson() {
+            if (!decodedCardData) return;
+            navigator.clipboard.writeText(JSON.stringify(decodedCardData, null, 2)).then(() => showToast('JSON copied to clipboard!', 'ok'));
+        }
+
+        function downloadDecodedJson() {
+            if (!decodedCardData) return;
+            const name = (decodedCardData.data?.name || 'character').replace(/[^a-zA-Z0-9_-]/g, '_');
+            const blob = new Blob([JSON.stringify(decodedCardData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = name + '.json'; a.click();
+            URL.revokeObjectURL(url);
+            showToast('JSON downloaded!', 'ok');
+        }
+
+        function editDecodedCard() {
+            if (!decodedCardData) return;
+            populateForm(decodedCardData);
+            if (decodedCardPng) {
+                uploadedImagePng = decodedCardPng;
+                const blob = new Blob([decodedCardPng], { type: 'image/png' });
+                uploadedImageUrl = URL.createObjectURL(blob);
+                showImagePreview('decoded_card.png', decodedCardPng.length);
+            }
+            switchTab('creator');
+            showToast('Card loaded into editor!', 'ok');
+        }
+
+        function toggleRawJson() {
+            const el = document.getElementById('decodedRawJson');
+            el.classList.toggle('hidden');
+        }
+
+        /* ==================== IMAGE HANDLING ==================== */
+        async function handleImageUpload(file) {
+            try {
+                const pngBytes = await getPngBytes(file);
+                uploadedImagePng = pngBytes;
+                if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
+                const blob = new Blob([pngBytes], { type: 'image/png' });
+                uploadedImageUrl = URL.createObjectURL(blob);
+                showImagePreview(file.name, file.size);
+                updatePreview();
+
+                // Check if the PNG already has character data
+                const existingData = extractCharaFromPng(pngBytes);
+                if (existingData) {
+                    const doImport = confirm('This image already contains character data! Do you want to import it into the form?');
+                    if (doImport) populateForm(existingData);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Error processing image: ' + e.message, 'err');
+            }
+        }
+
+        function showImagePreview(name, size) {
+            document.getElementById('imagePreviewContainer').classList.remove('hidden');
+            document.getElementById('imagePreviewThumb').src = uploadedImageUrl;
+            document.getElementById('imageFileName').textContent = name;
+            document.getElementById('imageFileSize').textContent = (size / 1024).toFixed(1) + ' KB';
+            document.getElementById('imageDropZone').style.display = 'none';
+        }
+
+        function removeImage() {
+            uploadedImagePng = null;
+            if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
+            uploadedImageUrl = null;
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('imageDropZone').style.display = '';
+            document.getElementById('imageInput').value = '';
+            updatePreview();
+        }
+
+        /* ==================== PREVIEW ==================== */
+        function updatePreview() {
+            const name = document.getElementById('charName').value || '?';
+            const creator = document.getElementById('charCreator').value || 'No creator set';
+            document.getElementById('previewName').textContent = name || 'Unnamed';
+            document.getElementById('previewCreator').textContent = creator;
+            document.getElementById('previewInitial').textContent = name.charAt(0).toUpperCase();
+
+            if (uploadedImageUrl) {
+                document.getElementById('previewImage').src = uploadedImageUrl;
+                document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('previewPlaceholder').style.display = 'none';
+            } else {
+                document.getElementById('previewImage').style.display = 'none';
+                document.getElementById('previewPlaceholder').style.display = 'flex';
+            }
+        }
+
+        /* ==================== TAGS ==================== */
+        function addTag(value) {
+            const input = document.getElementById('tagInput');
+            const tag = (value || input.value).trim();
+            if (tag && !currentTags.includes(tag)) {
+                currentTags.push(tag);
+                renderTags();
+            }
+            input.value = '';
+        }
+
+        function removeTag(index) {
+            currentTags.splice(index, 1);
+            renderTags();
+        }
+
+        function renderTags() {
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = currentTags.map((t, i) =>
+                `<span class="tag">${escapeHtml(t)} <span class="remove" onclick="removeTag(${i})"><i class="fas fa-xmark"></i></span></span>`
+            ).join('');
+        }
+
+        /* ==================== ALT GREETINGS ==================== */
+        function addAltGreeting(value) {
+            altGreetingCount++;
+            const id = 'altGreet' + altGreetingCount;
+            const container = document.getElementById('altGreetingsContainer');
+            const div = document.createElement('div');
+            div.className = 'alt-greet-item';
+            div.id = id;
+            div.innerHTML = `
+                <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>
+                <label class="mb-1" style="font-size:11px">Alternate Greeting #${altGreetingCount}</label>
+                <textarea class="alt-greet-textarea" rows="3" placeholder="An alternate first message...">${value ? escapeHtml(value) : ''}</textarea>
+            `;
+            container.appendChild(div);
+        }
+
+        /* ==================== UI HELPERS ==================== */
+        function toggleSection(header) {
+            header.classList.toggle('collapsed');
+            const body = header.nextElementSibling;
+            body.classList.toggle('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabId);
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('hidden', content.id !== 'tab-' + tabId);
+            });
+        }
+
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icons = { ok: 'fa-circle-check', err: 'fa-circle-xmark', info: 'fa-circle-info' };
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideIn .3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function setupDropZone(elementId, callback) {
+            const el = document.getElementById(elementId);
+            ['dragenter', 'dragover'].forEach(evt => {
+                el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.add('dragover'); });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.remove('dragover'); });
+            });
+            el.addEventListener('drop', e => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) callback(files[0]);
+            });
+        }
+
+        /* ==================== INITIALIZATION ==================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            // Image upload
+            setupDropZone('imageDropZone', handleImageUpload);
+            document.getElementById('imageInput').addEventListener('change', e => {
+                if (e.target.files.length > 0) handleImageUpload(e.target.files[0]);
+            });
+
+            // Decode upload
+            setupDropZone('decodeDropZone', handleDecodeFile);
+            document.getElementById('decodeFileInput').addEventListener('change', e => {
+                if (e.target.files.length > 0) handleDecodeFile(e.target.files[0]);
+            });
+
+            // Load card input
+            document.getElementById('loadCardInput').addEventListener('change', e => {
+                if (e.target.files.length > 0) handleLoadCard(e.target.files[0]);
+                e.target.value = '';
+            });
+
+            // Preview updates on input
+            document.getElementById('charName').addEventListener('input', updatePreview);
+            document.getElementById('charCreator').addEventListener('input', updatePreview);
+
+            updatePreview();
+        });
     </script>
-
-
+     <!-- Kriztech Analytics Pixel Code -->
+          <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
+          <!-- END Pixel Code -->
+          <!-- KrizReplay: Session Recording -->
+          <script defer src="https://kriztech.in/info/pixel.js"></script>
 </body>
-
 </html>
+
