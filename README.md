@@ -14,7 +14,7 @@
 
 <br>
 
-<img src="https://altkriz.github.io/aimaker/scr.png" alt="AiMaker Interface" width="800" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+<img src="https://altkriz.github.io/aimaker/scr3.png" alt="AiMaker Interface" width="800" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
 
 </div>
 
