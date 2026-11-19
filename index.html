@@ -1,1969 +1,1300 @@
-
 <!DOCTYPE html>
-<html>
-
+<html lang="en" data-theme="paper">
 <head>
-    <style></style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AiMaker — Card Forge by altkriz</title>
+<meta name="description" content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
+<meta name="keywords" content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker, KrizRP, Telegram Bot, Studio">
+<meta name="author" content="altkriz">
+<meta property="og:title" content="AiMaker by altkriz">
+<meta property="og:image" content="https://altkriz.github.io/aimaker/aimaker.png">
+<meta property="og:description" content="Create and edit TavernAI character cards easily. Supports all major platforms and KrizRP.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' fill='%23C9F24B' stroke='%23161512' stroke-width='8'/><text x='50' y='70' font-size='54' font-family='Arial Black' text-anchor='middle' font-weight='900'>A</text></svg>">
+<script src="https://unpkg.com/vue@3.4.38/dist/vue.global.prod.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ================= NEO-BRUTALIST PRINT / ZINE SYSTEM ================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --lime:#C9F24B; --coral:#FF6B4A; --violet:#9D8CFF; --sky:#62C9F2; --sun:#FFC93C; --pink:#FF9BD6;
+  --lime-t:rgba(201,242,75,.28);
+  --bg:#F3EEE2; --panel:#FFFCF3; --panel2:#F6F1E3;
+  --line:#161512; --ink:#161512; --mut:#7A7462; --shadow:#161512;
+  --dot:rgba(22,21,18,.09);
+  --screen:#161512; --screen-tx:#EFE8D6;
+}
+html[data-theme="ink"]{
+  --bg:#141412; --panel:#1D1C19; --panel2:#26251F;
+  --line:#EFE8D6; --ink:#EFE8D6; --mut:#A19A85; --shadow:#EFE8D6;
+  --dot:rgba(239,232,214,.07);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  background-image:radial-gradient(var(--dot) 1.2px,transparent 1.2px);
+  background-size:20px 20px;
+  color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.5;
+  min-height:100vh;transition:background-color .25s,color .25s;
+}
+[v-cloak]{display:none!important}
+::selection{background:var(--lime);color:#161512}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line);border:3px solid var(--bg)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+.mono{font-family:'Space Mono',monospace}
+.disp{font-family:'Archivo Black',sans-serif}
+
+/* ---------- ticker ---------- */
+.ticker{background:#161512;color:var(--lime);border-bottom:3px solid var(--line);overflow:hidden;height:34px;display:flex;align-items:center}
+html[data-theme="ink"] .ticker{background:var(--lime);color:#161512}
+.ticker-in{display:flex;width:max-content;animation:mq 32s linear infinite;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;white-space:nowrap}
+.ticker-in span{padding-right:48px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:262px minmax(0,1fr);min-height:calc(100vh - 34px)}
+.rail{border-right:3px solid var(--line);background:var(--panel);padding:18px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.logo-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.logo{display:flex;gap:10px;align-items:center}
+.logo-mark{width:42px;height:42px;background:var(--lime);border:3px solid var(--line);box-shadow:3px 3px 0 var(--shadow);display:flex;align-items:center;justify-content:center;font-family:'Archivo Black';font-size:16px;color:#161512;flex-shrink:0}
+.logo-word{font-family:'Archivo Black';font-size:19px;letter-spacing:1px;line-height:1}
+.logo-sub{display:flex;gap:6px;align-items:center;margin-top:5px}
+.stamp{font-family:'Space Mono';font-size:8px;font-weight:700;background:var(--sun);color:#161512;border:2px solid var(--line);padding:1px 7px;border-radius:999px;transform:rotate(-2deg);letter-spacing:1px}
+.logo-by{font-family:'Space Mono';font-size:8px;color:var(--mut);letter-spacing:1px}
+.seg{display:flex;border:3px solid var(--line);background:var(--panel2);flex-shrink:0}
+.seg button{font-family:'Space Mono';font-size:9px;font-weight:700;padding:5px 8px;letter-spacing:1px;color:var(--mut)}
+.seg button.on{background:var(--line);color:var(--bg)}
+.rail-nav{display:flex;flex-direction:column}
+.nv{border:3px solid var(--line);background:var(--panel2);box-shadow:4px 4px 0 var(--shadow);padding:10px;display:flex;gap:10px;align-items:center;transition:transform .15s,box-shadow .15s;margin-bottom:13px}
+.nv:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+.nv.on{background:var(--lime);color:#161512;transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+.nv-g{width:32px;height:32px;border:3px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--ink);flex-shrink:0;font-family:'Space Mono'}
+.nv.on .nv-g{background:#161512;color:var(--lime);border-color:#161512}
+.nv-tx{display:flex;flex-direction:column;min-width:0}
+.nv-n{font-family:'Space Mono';font-size:9px;color:var(--mut);letter-spacing:2px}
+.nv-l{font-family:'Archivo Black';font-size:15px;letter-spacing:.5px;line-height:1.15}
+.nv-s{font-family:'Space Mono';font-size:9px;color:var(--mut)}
+.nv.on .nv-n,.nv.on .nv-s{color:#161512}
+.nv-b{margin-left:auto;font-family:'Space Mono';font-size:8px;border:2px solid currentColor;padding:1px 6px;border-radius:999px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.rail-extras{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.statusbox{border:3px dashed var(--line);padding:10px 12px;font-family:'Space Mono';font-size:10px;line-height:1.7;background:var(--panel2)}
+.statusbox .dot{font-size:11px}
+.promo{display:flex;align-items:center;gap:10px;border:3px solid var(--line);background:var(--panel2);box-shadow:4px 4px 0 var(--shadow);padding:8px 10px;transition:transform .15s,box-shadow .15s}
+.promo:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+.promo-g{width:32px;height:32px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;color:#161512;flex-shrink:0}
+.promo b{display:block;font-size:12px;font-weight:800;letter-spacing:.3px}
+.promo small{font-family:'Space Mono';font-size:8.5px;color:var(--mut);letter-spacing:.5px}
+.rail-note{font-family:'Space Mono';font-size:9px;color:var(--mut);letter-spacing:1px;text-align:center}
+
+/* ---------- main / route head ---------- */
+.main{min-width:0}
+.page{max-width:1180px;margin:0 auto;padding:30px 32px 70px}
+.rhead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:28px}
+.rhead h2{font-family:'Archivo Black';font-size:clamp(30px,4.6vw,46px);text-transform:uppercase;line-height:.95;letter-spacing:-.5px}
+.hl{background:var(--lime);color:#161512;padding:0 10px;display:inline-block;transform:rotate(-1.2deg);box-shadow:4px 4px 0 var(--shadow)}
+.rsub{font-family:'Space Mono';font-size:11px;color:var(--mut);margin-top:12px;max-width:540px;letter-spacing:.3px}
+.r-stamp{font-family:'Archivo Black';font-size:76px;line-height:1;color:transparent;-webkit-text-stroke:2.5px var(--line);opacity:.3;user-select:none;flex-shrink:0}
+.fade-enter-active{transition:opacity .22s ease,transform .22s ease}
+.fade-enter-from{opacity:0;transform:translateY(10px)}
+
+/* ---------- panels ---------- */
+.forge-grid{display:grid;grid-template-columns:minmax(0,1fr) 292px;gap:30px;align-items:start}
+.panel{background:var(--panel);border:3px solid var(--line);box-shadow:7px 7px 0 var(--shadow);margin-bottom:28px}
+.p-h{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-bottom:3px solid var(--line);background:var(--panel);text-align:left}
+.p-h.closed{border-bottom-color:transparent}
+.p-h:hover .p-x{background:var(--lime);color:#161512}
+.p-num{width:30px;height:30px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Archivo Black';font-size:12px;color:#161512;box-shadow:3px 3px 0 var(--shadow);flex-shrink:0}
+.p-t{font-family:'Archivo Black';font-size:15px;letter-spacing:.5px;flex:1;text-transform:uppercase}
+.p-x{width:28px;height:28px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Space Mono';font-weight:700;font-size:15px;background:var(--panel2);transition:.15s;flex-shrink:0}
+.p-b{padding:16px;display:grid;gap:16px}
+
+/* ---------- form ---------- */
+label{display:block;font-family:'Space Mono';font-size:10px;font-weight:700;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px}
+label .hint{text-transform:none;letter-spacing:0;font-weight:400;opacity:.85}
+label .req{color:var(--coral)}
+.counter{float:right;font-size:9px;letter-spacing:0;font-weight:400}
+.counter.hot{color:var(--coral);font-weight:700}
+input[type=text],input[type=number],textarea{width:100%;background:var(--panel);border:3px solid var(--line);color:var(--ink);border-radius:0;padding:10px 12px;font-family:'Archivo';font-weight:500;font-size:14px;outline:none;transition:box-shadow .15s}
+input:focus,textarea:focus{box-shadow:4px 4px 0 var(--lime)}
+input::placeholder,textarea::placeholder{color:var(--mut);opacity:.7}
+textarea{resize:vertical;min-height:80px;line-height:1.55}
+textarea.code{font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;tab-size:2;background:var(--screen);color:var(--screen-tx);caret-color:var(--lime)}
+textarea.code::placeholder{color:rgba(239,232,214,.35)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.f2{grid-template-columns:1fr}}
+
+/* ---------- buttons ---------- */
+.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border:3px solid var(--line);background:var(--panel);color:var(--ink);font-family:'Archivo';font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.8px;box-shadow:4px 4px 0 var(--shadow);transition:transform .12s,box-shadow .12s;white-space:nowrap}
+.b:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+.b:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow)}
+.b-p{background:var(--lime);color:#161512}
+.b-d{background:var(--coral);color:#161512}
+.b-v{background:var(--violet);color:#161512}
+.b-sm{padding:6px 11px;font-size:11px;box-shadow:3px 3px 0 var(--shadow)}
+.b-sm:hover{box-shadow:5px 5px 0 var(--shadow)}
+.b-xs{padding:3px 8px;font-size:10px;box-shadow:2px 2px 0 var(--shadow);border-width:2px}
+.b-xs:hover{box-shadow:4px 4px 0 var(--shadow)}
+
+/* ---------- dropzone / image ---------- */
+.drop{border:3px dashed var(--line);background:var(--panel2);padding:34px 18px;text-align:center;cursor:pointer;transition:.15s}
+.drop:hover{background:var(--lime-t)}
+.drop.over{border-style:solid;background:var(--lime);color:#161512}
+.drop-g{font-size:38px;line-height:1;margin-bottom:10px;font-family:'Space Mono'}
+.drop p{font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.drop small{font-family:'Space Mono';font-size:10px;color:var(--mut);letter-spacing:.5px}
+.drop.over small{color:#161512}
+.imgrow{display:flex;align-items:center;gap:12px;border:3px solid var(--line);background:var(--panel2);padding:10px}
+.imgrow img{width:70px;height:70px;object-fit:cover;border:3px solid var(--line);flex-shrink:0}
+.imgrow .m{flex:1;min-width:0}
+.imgrow .nm{font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imgrow .sz{font-family:'Space Mono';font-size:10px;color:var(--mut)}
+
+/* ---------- tags / greetings ---------- */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.tag{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--line);border-radius:999px;background:var(--panel2);padding:3px 10px;font-family:'Space Mono';font-size:11px}
+.tag button{font-size:10px;font-weight:700;display:flex;color:var(--mut)}
+.tag button:hover{color:var(--coral)}
+.greet{border:3px solid var(--line);background:var(--panel2);padding:10px}
+.greet-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.greet-h span{font-family:'Space Mono';font-size:10px;font-weight:700;letter-spacing:1.5px}
+.greet textarea{background:var(--panel)}
+.empty{border:3px dashed var(--line);padding:14px;text-align:center;font-family:'Space Mono';font-size:10px;color:var(--mut);letter-spacing:1px;background:var(--panel2)}
+
+/* ---------- dock ---------- */
+.dock{position:sticky;bottom:14px;z-index:20;display:flex;flex-wrap:wrap;gap:10px;align-items:center;border:3px solid var(--line);background:var(--panel);box-shadow:7px 7px 0 var(--shadow);padding:12px 14px;margin-top:4px}
+.dock-t{font-family:'Archivo Black';font-size:13px;letter-spacing:1px;margin-right:auto}
+
+/* ---------- inspector ---------- */
+.inspector{position:sticky;top:20px;display:flex;flex-direction:column;gap:22px}
+.ins-title{font-family:'Space Mono';font-size:10px;font-weight:700;letter-spacing:2px;color:var(--mut);margin-bottom:10px;text-transform:uppercase}
+.pv{width:252px;margin:0 auto;background:var(--panel);border:3px solid var(--line);box-shadow:9px 9px 0 var(--violet);transition:transform .2s}
+.pv:hover{transform:rotate(-1.2deg) translate(-2px,-2px)}
+.pv-img{height:300px;border-bottom:3px solid var(--line);position:relative;overflow:hidden}
+.pv-img img{width:100%;height:100%;object-fit:cover;display:block}
+.pv-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel2);background-image:radial-gradient(var(--dot) 1.6px,transparent 1.6px);background-size:14px 14px}
+.pv-ph span{font-family:'Archivo Black';font-size:110px;color:var(--ink);opacity:.22}
+.pv-v2{position:absolute;top:10px;right:10px;font-family:'Space Mono';font-size:9px;font-weight:700;background:var(--sun);color:#161512;border:2px solid var(--line);padding:2px 8px;transform:rotate(3deg);letter-spacing:1px}
+.pv-name{background:var(--line);color:var(--bg);font-family:'Archivo Black';font-size:16px;text-transform:uppercase;padding:10px 12px;letter-spacing:.5px;word-break:break-word;line-height:1.2}
+.pv-by{font-family:'Space Mono';font-size:10px;color:var(--mut);padding:8px 12px 0;letter-spacing:.5px}
+.pv-tags{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px}
+.pv-tags .tag{font-size:9px;padding:2px 8px}
+.pv-bar{margin:4px 12px 12px;border-top:3px solid var(--line);padding-top:8px}
+.barcode{height:22px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 10px,var(--ink) 10px 13px,transparent 13px 15px)}
+.pv-bar small{display:block;font-family:'Space Mono';font-size:8px;letter-spacing:2px;color:var(--mut);text-align:center;margin-top:5px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{border:3px solid var(--line);background:var(--panel);box-shadow:4px 4px 0 var(--shadow);padding:10px 12px}
+.stat b{display:block;font-family:'Archivo Black';font-size:21px;line-height:1.1}
+.stat span{font-family:'Space Mono';font-size:8.5px;color:var(--mut);text-transform:uppercase;letter-spacing:1.5px}
+.sticky-note{background:var(--sun);color:#161512;border:3px solid var(--line);box-shadow:5px 5px 0 var(--shadow);padding:12px 14px;font-family:'Space Mono';font-size:10.5px;line-height:1.7;transform:rotate(1deg);letter-spacing:.3px}
+
+/* ---------- raw mode ---------- */
+.lamp{font-family:'Space Mono';font-size:9.5px;font-weight:700;border:2px solid var(--line);padding:3px 9px;letter-spacing:1px;color:#161512;white-space:nowrap}
+.lamp.ok{background:var(--lime)}
+.lamp.warn{background:var(--sun)}
+.lamp.err{background:var(--coral)}
+.jbox{border:3px solid var(--line);padding:10px 12px;font-family:'Space Mono';font-size:11px;word-break:break-word;color:#161512;line-height:1.6}
+.jbox.err{background:var(--coral)}
+.jbox.warn{background:var(--sun)}
+pre.screen{background:var(--screen);color:var(--lime);border:3px solid var(--line);padding:12px;font-family:'Space Mono',monospace;font-size:10.5px;line-height:1.6;overflow:auto;max-height:360px}
+.toolrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.manual{border:3px solid var(--line);background:var(--panel);box-shadow:6px 6px 0 var(--shadow);padding:14px}
+.manual p{font-family:'Space Mono';font-size:10.5px;line-height:1.8;color:var(--mut);letter-spacing:.2px}
+.manual p+p{margin-top:9px}
+.manual code{background:var(--panel2);border:1px solid var(--line);padding:0 5px;color:var(--ink)}
+.m-title{font-family:'Archivo Black';font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.m-title i{width:12px;height:12px;background:var(--coral);border:2px solid var(--line);display:inline-block;flex-shrink:0}
+
+/* ---------- decoder ---------- */
+.decode-wrap{max-width:800px;margin:0 auto}
+.hero{display:flex;gap:20px;align-items:flex-start;border:3px solid var(--line);background:var(--panel);box-shadow:8px 8px 0 var(--sky);padding:18px;margin-bottom:26px}
+.hero img{width:140px;height:180px;object-fit:cover;border:3px solid var(--line);flex-shrink:0}
+.hero h2{font-family:'Archivo Black';font-size:clamp(20px,3vw,30px);text-transform:uppercase;line-height:1.05;word-break:break-word}
+.hero .stamps{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.hero .stamps span{font-family:'Space Mono';font-size:9px;font-weight:700;border:2px solid var(--line);background:var(--panel2);padding:2px 8px;letter-spacing:1px}
+.dfield{border:3px solid var(--line);background:var(--panel);box-shadow:5px 5px 0 var(--shadow);padding:12px 14px;margin-bottom:16px}
+.dfield .fl{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;gap:8px}
+.dfield .fl b{font-family:'Space Mono';font-size:9.5px;font-weight:700;background:var(--sun);color:#161512;border:2px solid var(--line);padding:2px 9px;letter-spacing:1.5px;text-transform:uppercase}
+.dfield .fv{font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.dfield .fv.code{font-family:'Space Mono';font-size:11px;color:var(--mut)}
+.copybtn{font-family:'Space Mono';font-size:9px;font-weight:700;border:2px solid var(--line);background:var(--panel2);padding:2px 9px;letter-spacing:1px;transition:.12s}
+.copybtn:hover{background:var(--lime);color:#161512}
+
+/* ---------- toasts ---------- */
+.toasts{position:fixed;top:46px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:11px;max-width:min(340px,calc(100vw - 32px))}
+.toast{display:flex;align-items:flex-start;gap:10px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--shadow);padding:11px 14px;font-weight:800;font-size:12.5px;color:#161512;transform:rotate(-1deg);letter-spacing:.3px}
+.toast .tg{font-family:'Space Mono';font-weight:700;border:2px solid #161512;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:rgba(255,255,255,.4)}
+.toast.ok{background:var(--lime)}
+.toast.err{background:var(--coral)}
+.toast.info{background:var(--sky)}
+.t-enter-active,.t-leave-active{transition:.25s ease}
+.t-enter-from{opacity:0;transform:translateX(50px) rotate(-1deg)}
+.t-leave-to{opacity:0;transform:translateX(50px) rotate(-1deg)}
+
+/* ---------- modal ---------- */
+.modal-bg{position:fixed;inset:0;z-index:300;background:rgba(22,21,18,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--panel);border:3px solid var(--line);box-shadow:10px 10px 0 var(--lime);padding:22px;max-width:420px;width:100%}
+.modal h4{font-family:'Archivo Black';font-size:17px;text-transform:uppercase;margin-bottom:10px;letter-spacing:.5px}
+.modal p{font-family:'Space Mono';font-size:11.5px;color:var(--mut);line-height:1.8;margin-bottom:18px}
+.modal .m-actions{display:flex;justify-content:flex-end;gap:10px}
+
+/* ---------- footer ---------- */
+footer{border-top:3px solid var(--line);background:var(--panel);padding:36px 24px;text-align:center}
+.f-big{font-family:'Archivo Black';font-size:clamp(19px,3.2vw,32px);text-transform:uppercase;letter-spacing:.5px;margin-bottom:22px;line-height:1.3}
+.f-soc{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.f-prod{display:none;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.f-tiny{font-family:'Space Mono';font-size:9px;color:var(--mut);letter-spacing:2px}
+
+/* ---------- responsive ---------- */
+@media(max-width:1150px){
+  .forge-grid{grid-template-columns:1fr}
+  .inspector{position:static}
+  .r-stamp{display:none}
+}
+@media(max-width:920px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:none;border-bottom:3px solid var(--line);padding:12px 14px;gap:12px}
+  .rail-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .nv{margin-bottom:0;padding:8px}
+  .nv-s,.nv-b,.nv-n{display:none}
+  .nv-l{font-size:12px}
+  .nv-g{width:26px;height:26px;font-size:11px;border-width:2px}
+  .rail-extras{display:none}
+  .f-prod{display:flex}
+  .page{padding:22px 16px 60px}
+  .dock{bottom:10px}
+}
+@media(max-width:640px){
+  .hero{flex-direction:column}
+  .hero img{width:100%;height:230px}
+  .pv{width:230px}
+  .pv-img{height:270px}
+  .toasts{top:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ticker-in{animation:none}
+  *{transition:none!important}
+}
+</style>
 </head>
-
-<body data-theme="light">
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AiMaker by altkriz</title>
-        <meta name="description"
-            content="The ultimate tool to create, forge, and extract TavernAI character cards (V2). Fully compatible with Chub.ai, JanitorAI, Agnai.chat, SillyTavern, and other roleplay platforms. Plus KrizRP integration.">
-        <meta name="keywords"
-            content="TavernAI, Character Card, PNG Embed, JSON Extract, Chub.ai, JanitorAI, Agnai.chat, SillyTavern, Roleplay, Altkriz, Character Maker, KrizRP, Telegram Bot, Studio">
-        <meta name="author" content="altkriz">
-        <meta property="og:title" content="AiMaker by altkriz">
-        <meta property="og:image" content="https://altkriz.github.io/aimaker/aimaker.png">
-        <meta property="og:description"
-            content="Create and edit TavernAI character cards easily. Supports all major platforms and KrizRP.">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            bg: 'var(--bg)', surface: 'var(--surface)', elevated: 'var(--elevated)',
-                            bdr: 'var(--bdr)', muted: 'var(--muted)', txt: 'var(--txt)',
-                            accent: 'var(--accent)', 'accent-h': 'var(--accent-h)', err: '#e84848', ok: '#30c878'
-                        },
-                        fontFamily: {
-                            display: ['Space Grotesk', 'sans-serif'],
-                            mono: ['JetBrains Mono', 'monospace']
-                        }
-                    }
-                }
-            }
-        </script>
-        <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            :root {
-                --accent: #e89b20;
-                --accent-h: #fbb034;
-                --bg: #f8f8fc;
-                --surface: #ffffff;
-                --elevated: #f1f1f6;
-                --bdr: #dcdce8;
-                --muted: #71718a;
-                --txt: #18182b;
-                --header-from: rgba(255, 255, 255, .97);
-                --header-to: rgba(248, 248, 252, .98);
-                --danger-bg: #fef2f2;
-                --danger-border: #fecaca;
-                --danger-hover-bg: #fee2e2;
-                --toast-ok-bg: #f0fdf4;
-                --toast-ok-border: #bbf7d0;
-                --toast-err-bg: #fef2f2;
-                --toast-err-border: #fecaca;
-                --toast-info-bg: #eff6ff;
-                --toast-info-border: #bfdbfe;
-                --card-hover-bdr: #c4c4d4;
-                --hero-glow: rgba(232, 155, 32, .08);
-                --preview-from: #e8e8f2;
-                --preview-to: #dde0f0;
-            }
-
-            body[data-theme="dark"] {
-                --accent: #e89b20;
-                --accent-h: #fbb034;
-                --bg: #0b0b0e;
-                --surface: #131318;
-                --elevated: #1b1b22;
-                --bdr: #28283a;
-                --muted: #65657e;
-                --txt: #e4e4f0;
-                --header-from: rgba(19, 19, 24, .95);
-                --header-to: rgba(11, 11, 14, .98);
-                --danger-bg: #2a1515;
-                --danger-border: #3a1a1a;
-                --danger-hover-bg: #3a1a1a;
-                --toast-ok-bg: #1a2e1a;
-                --toast-ok-border: #1f3a1f;
-                --toast-err-bg: #2e1a1a;
-                --toast-err-border: #3a1f1f;
-                --toast-info-bg: #1a1f2e;
-                --toast-info-border: #1f2a3a;
-                --card-hover-bdr: #3a3a4e;
-                --hero-glow: rgba(232, 155, 32, .06);
-                --preview-from: #1a1a2e;
-                --preview-to: #16213e;
-            }
-
-            body {
-                background: var(--bg);
-                color: var(--txt);
-                font-family: 'Space Grotesk', sans-serif;
-                min-height: 100vh;
-                overflow-x: hidden;
-                transition: background-color .3s, color .3s;
-            }
-
-            ::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            ::-webkit-scrollbar-track {
-                background: var(--surface);
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: var(--bdr);
-                border-radius: 3px;
-            }
-
-            input,
-            textarea,
-            select {
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                color: var(--txt);
-                border-radius: 8px;
-                padding: 10px 14px;
-                font-family: 'Space Grotesk', sans-serif;
-                font-size: 14px;
-                outline: none;
-                transition: border-color .2s, box-shadow .2s;
-                width: 100%;
-            }
-
-            input:focus,
-            textarea:focus,
-            select:focus {
-                border-color: var(--accent);
-                box-shadow: 0 0 0 3px rgba(232, 155, 32, .15);
-            }
-
-            textarea {
-                resize: vertical;
-                min-height: 80px;
-                line-height: 1.5;
-            }
-
-            label {
-                display: block;
-                font-size: 13px;
-                font-weight: 600;
-                color: var(--muted);
-                margin-bottom: 6px;
-                text-transform: uppercase;
-                letter-spacing: .5px;
-            }
-
-            .btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-family: 'Space Grotesk', sans-serif;
-                font-weight: 600;
-                font-size: 14px;
-                border: none;
-                cursor: pointer;
-                transition: all .2s;
-            }
-
-            .btn-primary {
-                background: var(--accent);
-                color: #0b0b0e;
-            }
-
-            .btn-primary:hover {
-                background: var(--accent-h);
-                transform: translateY(-1px);
-                box-shadow: 0 4px 20px rgba(232, 155, 32, .3);
-            }
-
-            .btn-secondary {
-                background: var(--elevated);
-                color: var(--txt);
-                border: 1px solid var(--bdr);
-            }
-
-            .btn-secondary:hover {
-                border-color: var(--accent);
-                color: var(--accent);
-            }
-
-            .btn-danger {
-                background: var(--danger-bg);
-                color: #e84848;
-                border: 1px solid var(--danger-border);
-            }
-
-            .btn-danger:hover {
-                background: var(--danger-hover-bg);
-            }
-
-            .btn-sm {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .section-card {
-                background: var(--surface);
-                border: 1px solid var(--bdr);
-                border-radius: 12px;
-                overflow: hidden;
-                margin-bottom: 16px;
-                transition: border-color .3s;
-            }
-
-            .section-card:hover {
-                border-color: var(--card-hover-bdr);
-            }
-
-            .section-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 16px 20px;
-                cursor: pointer;
-                user-select: none;
-                transition: background .2s;
-            }
-
-            .section-header:hover {
-                background: var(--elevated);
-            }
-
-            .section-header h3 {
-                font-size: 15px;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .section-header i.chevron {
-                transition: transform .3s;
-                font-size: 12px;
-                color: var(--muted);
-            }
-
-            .section-header.collapsed i.chevron {
-                transform: rotate(-90deg);
-            }
-
-            .section-body {
-                padding: 0 20px 20px;
-                display: grid;
-                gap: 16px;
-            }
-
-            .section-body.hidden {
-                display: none;
-            }
-
-            .tab-btn {
-                padding: 12px 24px;
-                font-weight: 600;
-                font-size: 14px;
-                border: none;
-                background: transparent;
-                color: var(--muted);
-                cursor: pointer;
-                border-bottom: 2px solid transparent;
-                transition: all .2s;
-                font-family: 'Space Grotesk', sans-serif;
-            }
-
-            .tab-btn.active {
-                color: var(--accent);
-                border-bottom-color: var(--accent);
-            }
-
-            .tab-btn:hover:not(.active) {
-                color: var(--txt);
-            }
-
-            .drop-zone {
-                border: 2px dashed var(--bdr);
-                border-radius: 12px;
-                padding: 40px;
-                text-align: center;
-                cursor: pointer;
-                transition: all .3s;
-                background: var(--surface);
-            }
-
-            .drop-zone:hover,
-            .drop-zone.dragover {
-                border-color: var(--accent);
-                background: rgba(232, 155, 32, .04);
-            }
-
-            .drop-zone .icon {
-                font-size: 48px;
-                color: var(--muted);
-                margin-bottom: 12px;
-            }
-
-            .toast-container {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .toast {
-                padding: 14px 20px;
-                border-radius: 10px;
-                font-size: 13px;
-                font-weight: 500;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                animation: slideIn .3s ease;
-                box-shadow: 0 8px 30px rgba(0, 0, 0, .5);
-                max-width: 360px;
-            }
-
-            .toast-ok {
-                background: var(--toast-ok-bg);
-                color: #30c878;
-                border: 1px solid var(--toast-ok-border);
-            }
-
-            .toast-err {
-                background: var(--toast-err-bg);
-                color: #e84848;
-                border: 1px solid var(--toast-err-border);
-            }
-
-            .toast-info {
-                background: var(--toast-info-bg);
-                color: #5b9cf5;
-                border: 1px solid var(--toast-info-border);
-            }
-
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-
-            .tag {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                border-radius: 6px;
-                padding: 4px 10px;
-                font-size: 12px;
-                color: var(--txt);
-            }
-
-            .tag .remove {
-                cursor: pointer;
-                color: var(--muted);
-                transition: color .2s;
-                font-size: 10px;
-            }
-
-            .tag .remove:hover {
-                color: var(--err);
-            }
-
-            .alt-greet-item {
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                border-radius: 8px;
-                padding: 12px;
-                position: relative;
-            }
-
-            .alt-greet-item .remove-btn {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                background: none;
-                border: none;
-                color: var(--muted);
-                cursor: pointer;
-                font-size: 14px;
-                transition: color .2s;
-            }
-
-            .alt-greet-item .remove-btn:hover {
-                color: var(--err);
-            }
-
-            .decoded-field {
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                border-radius: 8px;
-                padding: 14px;
-                margin-bottom: 10px;
-            }
-
-            .decoded-field .field-label {
-                font-size: 11px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: .5px;
-                color: var(--accent);
-                margin-bottom: 6px;
-            }
-
-            .decoded-field .field-value {
-                font-size: 14px;
-                line-height: 1.6;
-                white-space: pre-wrap;
-                word-break: break-word;
-            }
-
-            .preview-card {
-                width: 200px;
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                border-radius: 12px;
-                overflow: hidden;
-                transition: transform .3s, box-shadow .3s;
-            }
-
-            .preview-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 30px rgba(232, 155, 32, .1);
-            }
-
-            .preview-card img {
-                width: 100%;
-                height: 260px;
-                object-fit: cover;
-            }
-
-            .preview-card .info {
-                padding: 12px;
-            }
-
-            .preview-card .char-name {
-                font-weight: 700;
-                font-size: 15px;
-                margin-bottom: 2px;
-            }
-
-            .preview-card .char-creator {
-                font-size: 11px;
-                color: var(--muted);
-            }
-
-            .hero-glow {
-                position: fixed;
-                top: -200px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 600px;
-                height: 400px;
-                background: radial-gradient(ellipse, var(--hero-glow) 0%, transparent 70%);
-                pointer-events: none;
-                z-index: 0;
-            }
-
-            @media(max-width:768px) {
-                .tab-btn {
-                    padding: 10px 14px;
-                    font-size: 13px;
-                }
-
-                .preview-card {
-                    width: 160px;
-                }
-
-                .preview-card img {
-                    height: 200px;
-                }
-            }
-
-            .fade-in {
-                animation: fadeIn .4s ease;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            #themeToggle {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--elevated);
-                border: 1px solid var(--bdr);
-                color: var(--muted);
-                cursor: pointer;
-                border-radius: 6px;
-                padding: 4px 8px;
-                font-size: 14px;
-                transition: all .2s;
-            }
-
-            #themeToggle:hover {
-                border-color: var(--accent);
-                color: var(--accent);
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="hero-glow"></div>
-        <div class="toast-container" id="toastContainer"></div>
-
-        <!-- Header -->
-        <header class="relative z-10 border-b border-bdr"
-            style="background: linear-gradient(180deg, var(--header-from), var(--header-to))">
-            <div class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg"
-                        style="background: linear-gradient(135deg, var(--accent), #d47a10)">
-                        <i class="fas fa-hammer" style="color:#0b0b0e"></i>
+<body>
+<div id="app" v-cloak>
+
+  <!-- ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-in">
+      <span>★ CHARA_CARD_V2 ★ SILLYTAVERN ★ CHUB.AI ★ JANITORAI ★ AGNAI.CHAT ★ KRIZRP ★ 100% LOCAL — NO UPLOADS ★ FORGE · EMBED · DECODE ★</span>
+      <span>★ CHARA_CARD_V2 ★ SILLYTAVERN ★ CHUB.AI ★ JANITORAI ★ AGNAI.CHAT ★ KRIZRP ★ 100% LOCAL — NO UPLOADS ★ FORGE · EMBED · DECODE ★</span>
+    </div>
+  </div>
+
+  <!-- toasts -->
+  <div class="toasts">
+    <transition-group name="t">
+      <div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">
+        <span class="tg">{{ toastIcon(t.type) }}</span><span>{{ t.msg }}</span>
+      </div>
+    </transition-group>
+  </div>
+
+  <!-- confirm modal -->
+  <transition name="fade">
+    <div v-if="confirmState" class="modal-bg" @click.self="resolveConfirm(false)">
+      <div class="modal">
+        <h4>{{ confirmState.title }}</h4>
+        <p>{{ confirmState.message }}</p>
+        <div class="m-actions">
+          <button class="b b-sm" @click="resolveConfirm(false)">Cancel</button>
+          <button class="b b-p b-sm" @click="resolveConfirm(true)">{{ confirmState.okText || 'Continue' }}</button>
+        </div>
+      </div>
+    </div>
+  </transition>
+
+  <div class="shell">
+    <!-- ============ COMMAND RAIL ============ -->
+    <aside class="rail">
+      <div class="logo-row">
+        <div class="logo">
+          <div class="logo-mark">Ai</div>
+          <div>
+            <div class="logo-word">MAKER</div>
+            <div class="logo-sub"><span class="stamp">V2 SPEC</span><span class="logo-by">by altkriz</span></div>
+          </div>
+        </div>
+        <div class="seg" role="group" aria-label="Theme">
+          <button :class="{on:theme==='paper'}" @click="setTheme('paper')">PAPER</button>
+          <button :class="{on:theme==='ink'}" @click="setTheme('ink')">INK</button>
+        </div>
+      </div>
+
+      <nav class="rail-nav">
+        <a v-for="r in routes" :key="r.id" class="nv" :class="{on:route===r.id}" :href="'#/'+r.id">
+          <span class="nv-g">{{ r.glyph }}</span>
+          <span class="nv-tx">
+            <span class="nv-n">{{ r.n }}</span>
+            <span class="nv-l">{{ r.label }}</span>
+            <span class="nv-s">{{ r.sub }}</span>
+          </span>
+          <span v-if="r.id==='forge' && form.name" class="nv-b">{{ form.name.slice(0,10) }}</span>
+        </a>
+      </nav>
+
+      <div class="rail-extras">
+        <div class="statusbox">
+          <span class="dot" :style="{color: savedAt ? '#3fae5a' : 'var(--mut)'}">●</span>
+          {{ autosaveLabel }}<br>SPEC CHARA_CARD_V2 · 2.0
+        </div>
+        <a class="promo" href="https://t.me/krizrpbot" target="_blank" rel="noopener">
+          <span class="promo-g" style="background:var(--sky)">✈</span>
+          <span><b>KrizRP Bot</b><small>PLAY IN TELEGRAM</small></span>
+        </a>
+        <a class="promo" href="https://kriztech.in/krizrp" target="_blank" rel="noopener">
+          <span class="promo-g" style="background:var(--coral)">▶</span>
+          <span><b>KrizRP Studio</b><small>WEB ROLEPLAY</small></span>
+        </a>
+        <p class="rail-note">100% LOCAL — NOTHING<br>LEAVES THIS TAB</p>
+      </div>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <main class="main">
+      <div class="page">
+        <transition name="fade" mode="out-in">
+
+          <!-- ================= ROUTE: FORGE ================= -->
+          <div v-if="route==='forge'" key="forge">
+            <div class="rhead">
+              <div>
+                <h2>THE <span class="hl">FORGE</span>.</h2>
+                <p class="rsub">HAMMER A CHARACTER INTO A TAVERNAI V2 CARD. FILL THE PANELS, WATCH THE PREVIEW, EXPORT A PNG.</p>
+              </div>
+              <div class="r-stamp">01</div>
+            </div>
+
+            <div class="forge-grid">
+              <div>
+                <!-- 01 COVER -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.cover}" @click="open.cover=!open.cover">
+                    <span class="p-num" style="background:var(--lime)">01</span>
+                    <span class="p-t">Cover Image</span>
+                    <span class="p-x">{{ open.cover ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.cover">
+                    <div v-if="!img.url" class="drop" :class="{over:drag.cover}"
+                         @click="$refs.coverInput.click()"
+                         @dragenter.prevent="drag.cover=true" @dragover.prevent="drag.cover=true"
+                         @dragleave.prevent="drag.cover=false" @drop.prevent="drag.cover=false; onImageDrop($event,'form')">
+                      <div class="drop-g">⇪</div>
+                      <p>Drop image / click to browse</p>
+                      <small>PNG BEST · JPG &amp; WEBP AUTO-CONVERTED · NO IMAGE? WE GENERATE A COVER</small>
+                    </div>
+                    <div v-else class="imgrow">
+                      <img :src="img.url" alt="character cover">
+                      <div class="m">
+                        <div class="nm">{{ img.name }}</div>
+                        <div class="sz">{{ fmtSize(img.size) }} · PNG</div>
+                      </div>
+                      <button class="b b-sm" @click="$refs.coverInput.click()" aria-label="Replace image">⇄</button>
+                      <button class="b b-d b-sm" @click="removeImage('form')" aria-label="Remove image">✕</button>
+                    </div>
+                    <input ref="coverInput" type="file" accept="image/png,image/jpeg,image/webp" hidden @change="onFilePick($event,'form')">
+                  </div>
+                </section>
+
+                <!-- 02 IDENTITY -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.identity}" @click="open.identity=!open.identity">
+                    <span class="p-num" style="background:var(--coral)">02</span>
+                    <span class="p-t">Identity</span>
+                    <span class="p-x">{{ open.identity ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.identity">
+                    <div class="f2">
+                      <div><label>Character Name <span class="req">*</span></label><input type="text" v-model="form.name" placeholder="e.g. Aria Nightwhisper"></div>
+                      <div><label>Creator</label><input type="text" v-model="form.creator" placeholder="Your name"></div>
+                    </div>
+                    <div class="f2">
+                      <div><label>Character Version</label><input type="text" v-model="form.character_version" placeholder="e.g. 1.0"></div>
+                      <div>
+                        <label>Tags <span class="counter">{{ form.tags.length }}</span></label>
+                        <div style="display:flex;gap:8px">
+                          <input type="text" v-model="tagDraft" placeholder="tag + enter" @keydown.enter.prevent="addTag">
+                          <button class="b b-sm" @click="addTag" aria-label="Add tag">+</button>
+                        </div>
+                        <div class="tags">
+                          <span v-for="(t,i) in form.tags" :key="t" class="tag">{{ t }}
+                            <button @click="form.tags.splice(i,1)" aria-label="Remove tag">✕</button>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 03 PERSONA -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.persona}" @click="open.persona=!open.persona">
+                    <span class="p-num" style="background:var(--violet)">03</span>
+                    <span class="p-t">Persona</span>
+                    <span class="p-x">{{ open.persona ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.persona">
+                    <div>
+                      <label>Description <span class="hint">— traits, appearance, background</span><span class="counter" :class="{hot:form.description.length>2000}">{{ form.description.length }} CH</span></label>
+                      <textarea v-model="form.description" rows="5" placeholder="Describe the character in detail..."></textarea>
                     </div>
                     <div>
-                        <h1 class="font-display font-bold text-xl tracking-tight" style="color:var(--txt)">AiMaker</h1>
-                        <p class="text-xs" style="color:var(--muted)">Character Card V2 Maker</p>
+                      <label>Personality <span class="hint">— summary of traits</span><span class="counter">{{ form.personality.length }} CH</span></label>
+                      <textarea v-model="form.personality" rows="3" placeholder="e.g. Calm, analytical, fiercely loyal"></textarea>
                     </div>
+                  </div>
+                </section>
+
+                <!-- 04 DIALOGUE -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.dialogue}" @click="open.dialogue=!open.dialogue">
+                    <span class="p-num" style="background:var(--sky)">04</span>
+                    <span class="p-t">Dialogue</span>
+                    <span class="p-x">{{ open.dialogue ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.dialogue">
+                    <div>
+                      <label>Scenario <span class="hint">— the setting / situation</span></label>
+                      <textarea v-model="form.scenario" rows="3" placeholder="Describe the scenario..."></textarea>
+                    </div>
+                    <div>
+                      <label>First Message <span class="hint">— greeting</span><span class="counter" :class="{hot:form.first_mes.length>1500}">{{ form.first_mes.length }} CH</span></label>
+                      <textarea v-model="form.first_mes" rows="5" placeholder="The character's opening message..."></textarea>
+                    </div>
+                    <div>
+                      <label>Message Examples <span class="hint">— example dialogues</span></label>
+                      <textarea v-model="form.mes_example" rows="4" placeholder="&lt;START&gt;&#10;&#123;&#123;user&#125;&#125;: Hello&#10;&#123;&#123;char&#125;&#125;: *smiles* Greetings, traveler."></textarea>
+                    </div>
+                    <div>
+                      <div class="toolrow" style="margin-bottom:9px">
+                        <label style="margin:0">Alternate Greetings [{{ form.alternate_greetings.length }}]</label>
+                        <button class="b b-sm" @click="form.alternate_greetings.push('')">+ Add</button>
+                      </div>
+                      <div style="display:grid;gap:12px">
+                        <div v-for="(g,i) in form.alternate_greetings" :key="i" class="greet">
+                          <div class="greet-h">
+                            <span>GREETING #{{ i+1 }}</span>
+                            <button class="b b-d b-xs" @click="form.alternate_greetings.splice(i,1)" aria-label="Remove greeting">✕</button>
+                          </div>
+                          <textarea v-model="form.alternate_greetings[i]" rows="3" placeholder="An alternate first message..."></textarea>
+                        </div>
+                        <p v-if="!form.alternate_greetings.length" class="empty">NO ALT GREETINGS YET — ADD ONE TO GIVE USERS DIFFERENT OPENINGS</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 05 DIRECTIVES -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.directives}" @click="open.directives=!open.directives">
+                    <span class="p-num" style="background:var(--sun)">05</span>
+                    <span class="p-t">Directives</span>
+                    <span class="p-x">{{ open.directives ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.directives">
+                    <div>
+                      <label>System Prompt <span class="hint">— instructions for the AI</span></label>
+                      <textarea v-model="form.system_prompt" rows="4" placeholder="Write system-level instructions..."></textarea>
+                    </div>
+                    <div>
+                      <label>Post History Instructions <span class="hint">— injected after chat history</span></label>
+                      <textarea v-model="form.post_history_instructions" rows="3" placeholder="Instructions injected after conversation history..."></textarea>
+                    </div>
+                    <div>
+                      <label>Creator Notes <span class="hint">— notes for other users</span></label>
+                      <textarea v-model="form.creator_notes" rows="3" placeholder="Any notes about the character..."></textarea>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 06 EXTENSIONS -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.ext}" @click="open.ext=!open.ext">
+                    <span class="p-num" style="background:var(--pink)">06</span>
+                    <span class="p-t">Extensions</span>
+                    <span class="p-x">{{ open.ext ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.ext">
+                    <div class="f2">
+                      <div><label>Depth Prompt — Content</label><textarea v-model="ext.depthPrompt" rows="2" placeholder="Prompt injected at depth..."></textarea></div>
+                      <div><label>Depth Prompt — Depth</label><input type="number" v-model="ext.depth" min="0" max="999" placeholder="0–999"></div>
+                    </div>
+                    <div><label>Talkativeness <span class="hint">0.0 — 1.0</span></label><input type="number" v-model="ext.talkativeness" min="0" max="1" step="0.1" placeholder="0.5"></div>
+                    <div>
+                      <label>Custom Extensions JSON <span class="hint">— merged with above</span></label>
+                      <textarea class="code" v-model="ext.customJson" rows="4" spellcheck="false" placeholder='{"your_extension_key": "value"}'></textarea>
+                      <p v-if="extJsonError" class="jbox err" style="margin-top:10px">✕ {{ extJsonError }}</p>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- dock -->
+                <div class="dock">
+                  <span class="dock-t">OUTPUT ▸</span>
+                  <button class="b b-p" @click="exportFormPng">⤓ Export PNG</button>
+                  <button class="b" @click="exportFormJson">⤓ JSON</button>
+                  <button class="b" @click="$refs.loadInput.click()">⇪ Load Card</button>
+                  <button class="b" @click="loadExampleToForm">★ Example</button>
+                  <button class="b b-d" @click="clearForm">✕ Clear</button>
+                  <input ref="loadInput" type="file" accept="image/png,.png,application/json,.json" hidden @change="onLoadCard">
                 </div>
-                <div class="flex items-center gap-2 text-xs font-mono" style="color:var(--muted)">
-                    <span class="px-2 py-1 rounded"
-                        style="background:var(--elevated); border: 1px solid var(--bdr)">spec: chara_card_v2</span>
-                    <span class="px-2 py-1 rounded"
-                        style="background:var(--elevated); border: 1px solid var(--bdr)">v2.0</span>
-                    <button id="themeToggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon"
-                            id="themeIcon"></i></button>
+              </div>
+
+              <!-- inspector -->
+              <aside class="inspector">
+                <div>
+                  <p class="ins-title">◉ Live Preview</p>
+                  <div class="pv">
+                    <div class="pv-img">
+                      <img v-if="img.url" :src="img.url" alt="preview">
+                      <div v-else class="pv-ph"><span>{{ initial }}</span></div>
+                      <span class="pv-v2">V2</span>
+                    </div>
+                    <div class="pv-name">{{ form.name || 'UNNAMED' }}</div>
+                    <div class="pv-by">{{ form.creator ? 'BY ' + form.creator.toUpperCase() : 'NO CREATOR SET' }}</div>
+                    <div class="pv-tags" v-if="form.tags.length">
+                      <span v-for="t in form.tags.slice(0,4)" :key="t" class="tag">{{ t }}</span>
+                      <span v-if="form.tags.length>4" class="tag">+{{ form.tags.length-4 }}</span>
+                    </div>
+                    <div class="pv-bar">
+                      <div class="barcode"></div>
+                      <small>CHARA_CARD_V2 · SPEC 2.0</small>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </header>
-
-        <!-- Tabs -->
-        <nav class="relative z-10 border-b border-bdr" style="background:var(--surface)">
-            <div class="max-w-6xl mx-auto px-4 flex">
-                <button class="tab-btn active" data-tab="creator"><i class="fas fa-wand-magic-sparkles mr-2"></i>Create
-                    & Edit</button>
-                <button class="tab-btn" data-tab="direct"><i class="fas fa-file-code mr-2"></i>Direct Maker</button>
-                <button class="tab-btn" data-tab="decoder"><i class="fas fa-magnifying-glass mr-2"></i>Decode</button>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="relative z-10 max-w-6xl mx-auto px-4 py-6">
-
-            <!-- ====== CREATOR TAB ====== -->
-            <div id="tab-creator" class="tab-content fade-in">
-                <div class="flex flex-col lg:flex-row gap-6">
-                    <!-- Left: Form -->
-                    <div class="flex-1 min-w-0">
-                        <!-- Image Upload -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-image" style="color:var(--accent)"></i> Character Image</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body">
-                                <div class="drop-zone" id="imageDropZone"
-                                    onclick="document.getElementById('imageInput').click()">
-                                    <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp" hidden>
-                                    <div class="icon"><i class="fas fa-cloud-arrow-up"></i></div>
-                                    <p class="font-semibold mb-1">Drop image here or click to browse</p>
-                                    <p class="text-xs" style="color:var(--muted)">PNG recommended. Will be converted to
-                                        PNG on export.</p>
-                                </div>
-                                <div id="imagePreviewContainer" class="hidden">
-                                    <div class="flex items-center gap-4">
-                                        <img id="imagePreviewThumb"
-                                            class="w-20 h-20 rounded-lg object-cover border border-bdr">
-                                        <div class="flex-1 min-w-0">
-                                            <p id="imageFileName" class="text-sm font-medium truncate"></p>
-                                            <p id="imageFileSize" class="text-xs" style="color:var(--muted)"></p>
-                                        </div>
-                                        <button class="btn btn-danger btn-sm" onclick="removeImage()"><i
-                                                class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Basic Info -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-id-badge" style="color:var(--accent)"></i> Basic Info</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label>Character Name *</label><input type="text" id="charName"
-                                            placeholder="e.g. Aria Nightwhisper" oninput="updatePreview()"></div>
-                                    <div><label>Creator</label><input type="text" id="charCreator"
-                                            placeholder="Your name" oninput="updatePreview()"></div>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label>Character Version</label><input type="text" id="charVersion"
-                                            placeholder="e.g. 1.0"></div>
-                                    <div>
-                                        <label>Tags</label>
-                                        <div class="flex gap-2">
-                                            <input type="text" id="tagInput" placeholder="Add tag + Enter"
-                                                onkeydown="if(event.key==='Enter'){event.preventDefault();addTag()}">
-                                            <button class="btn btn-secondary btn-sm" onclick="addTag()"
-                                                style="white-space:nowrap"><i class="fas fa-plus"></i></button>
-                                        </div>
-                                        <div id="tagsContainer" class="flex flex-wrap gap-2 mt-2"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Description & Personality -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-feather" style="color:var(--accent)"></i> Description & Personality
-                                </h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body">
-                                <div><label>Description <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Traits, appearance,
-                                            background)</span></label><textarea id="charDescription" rows="5"
-                                        placeholder="Describe the character in detail..."></textarea></div>
-                                <div><label>Personality <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Summary of traits)</span></label><textarea
-                                        id="charPersonality" rows="3"
-                                        placeholder="e.g. Calm, analytical, fiercely loyal"></textarea></div>
-                            </div>
-                        </div>
-
-                        <!-- Scenario & Dialogue -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-comments" style="color:var(--accent)"></i> Scenario & Dialogue</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body">
-                                <div><label>Scenario <span class="font-normal text-xs" style="color:var(--muted)">(The
-                                            setting/situation)</span></label><textarea id="charScenario" rows="3"
-                                        placeholder="Describe the scenario..."></textarea></div>
-                                <div><label>First Message <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Greeting message)</span></label><textarea
-                                        id="charFirstMes" rows="5"
-                                        placeholder="The character's opening message..."></textarea></div>
-                                <div><label>Message Examples <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Example dialogues)</span></label><textarea
-                                        id="charMesExample" rows="4"
-                                        placeholder="<START>\n{{user}}: Hello\n{{char}}: *smiles* Greetings, traveler."></textarea>
-                                </div>
-                                <div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <label class="mb-0">Alternate Greetings</label>
-                                        <button class="btn btn-secondary btn-sm" onclick="addAltGreeting()"><i
-                                                class="fas fa-plus"></i> Add</button>
-                                    </div>
-                                    <div id="altGreetingsContainer" class="grid gap-3"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Advanced -->
-                        <div class="section-card">
-                            <div class="section-header collapsed" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-gear" style="color:var(--accent)"></i> Advanced Settings</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body hidden">
-                                <div><label>System Prompt <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Instructions for the AI)</span></label><textarea
-                                        id="charSystemPrompt" rows="4"
-                                        placeholder="Write system-level instructions..."></textarea></div>
-                                <div><label>Post History Instructions <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Injected after chat
-                                            history)</span></label><textarea id="charPostHistory" rows="3"
-                                        placeholder="Instructions injected after conversation history..."></textarea>
-                                </div>
-                                <div><label>Creator Notes <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Notes for other users)</span></label><textarea
-                                        id="charCreatorNotes" rows="3"
-                                        placeholder="Any notes about the character..."></textarea></div>
-                            </div>
-                        </div>
-
-                        <!-- Extensions -->
-                        <div class="section-card">
-                            <div class="section-header collapsed" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-puzzle-piece" style="color:var(--accent)"></i> Extensions</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body hidden">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label>Depth Prompt — Content</label><textarea id="extDepthPrompt" rows="2"
-                                            placeholder="Prompt injected at depth..."></textarea></div>
-                                    <div><label>Depth Prompt — Depth</label><input type="number" id="extDepth"
-                                            placeholder="0-999" min="0" max="999" value="4"></div>
-                                </div>
-                                <div><label>Talkativeness <span class="font-normal text-xs"
-                                            style="color:var(--muted)">0.0 — 1.0</span></label><input type="number"
-                                        id="extTalkativeness" placeholder="0.5" min="0" max="1" step="0.1"></div>
-                                <div><label>Custom Extensions JSON <span class="font-normal text-xs"
-                                            style="color:var(--muted)">(Merged with above)</span></label><textarea
-                                        id="extCustomJson" rows="4" placeholder='{"your_extension_key": "value"}'
-                                        style="font-family:'JetBrains Mono',monospace; font-size:12px"></textarea></div>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex flex-wrap gap-3 mt-2 mb-8">
-                            <button class="btn btn-primary" onclick="exportPng()"><i class="fas fa-download"></i> Export
-                                PNG Card</button>
-                            <button class="btn btn-secondary" onclick="exportJson()"><i class="fas fa-code"></i> Export
-                                JSON</button>
-                            <button class="btn btn-secondary" onclick="loadCard()"><i class="fas fa-upload"></i> Load
-                                Card</button>
-                            <button class="btn btn-danger" onclick="clearForm()"><i class="fas fa-eraser"></i>
-                                Clear</button>
-                            <input type="file" id="loadCardInput" accept="image/png,.png,application/json,.json" hidden>
-                        </div>
-                    </div>
-
-                    <!-- Right: Preview -->
-                    <div class="lg:w-56 flex-shrink-0">
-                        <div class="lg:sticky lg:top-6">
-                            <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--muted)">
-                                Live Preview</p>
-                            <div class="preview-card mx-auto lg:mx-0">
-                                <img id="previewImage" src="" alt="Preview" style="display:none">
-                                <div id="previewPlaceholder" class="w-full flex items-center justify-center"
-                                    style="height:260px; background: linear-gradient(135deg, var(--preview-from), var(--preview-to))">
-                                    <span class="text-5xl font-bold" style="color:var(--accent); opacity:.4"
-                                        id="previewInitial">?</span>
-                                </div>
-                                <div class="info">
-                                    <div class="char-name" id="previewName">Unnamed</div>
-                                    <div class="char-creator" id="previewCreator">No creator set</div>
-                                </div>
-                            </div>
-                            <div class="mt-4 p-3 rounded-lg text-xs"
-                                style="background:var(--surface); border: 1px solid var(--bdr); color: var(--muted)">
-                                <p><i class="fas fa-circle-info mr-1" style="color:var(--accent)"></i> PNG cards embed
-                                    V2 JSON data inside the image file using tEXt metadata chunks.</p>
-                            </div>
-                            <!-- Promotional Ads -->
-                            <div class="mt-4 p-3 rounded-lg text-xs"
-                                style="background: var(--surface); border: 1px solid var(--bdr)">
-                                <p class="font-semibold mb-2 uppercase tracking-wide"
-                                    style="color: var(--muted); font-size: 10px">
-                                    Our Products
-                                </p>
-                                <a href="https://t.me/krizrpbot" target="_blank"
-                                    class="block p-2 rounded mb-2 hover:bg-elevated transition-colors flex items-center gap-3"
-                                    style="border: 1px solid var(--bdr); text-decoration: none">
-                                    <div class="w-8 h-8 rounded-md flex flex-shrink-0 items-center justify-center"
-                                        style="background: rgba(43, 161, 219, 0.15); color: #2ba1db; font-size: 16px;">
-                                        <i class="fab fa-telegram-plane"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="font-bold text-sm truncate" style="color: var(--txt)">KrizRP Bot</p>
-                                        <p class="truncate" style="color: var(--muted); font-size: 10px">Play directly
-                                            in Telegram</p>
-                                    </div>
-                                </a>
-                                <a href="https://kriztech.in/krizrp" target="_blank"
-                                    class="block p-2 rounded hover:bg-elevated transition-colors flex items-center gap-3"
-                                    style="border: 1px solid var(--bdr); text-decoration: none">
-                                    <div class="w-8 h-8 rounded-md flex flex-shrink-0 items-center justify-center"
-                                        style="background: rgba(232, 155, 32, 0.15); color: var(--accent); font-size: 16px;">
-                                        <i class="fas fa-gamepad"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="font-bold text-sm truncate" style="color: var(--txt)">KrizRP Studio
-                                        </p>
-                                        <p class="truncate" style="color: var(--muted); font-size: 10px">Web Roleplay
-                                            Platform</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                  <p class="ins-title">◉ Card Stats</p>
+                  <div class="stats">
+                    <div class="stat"><b>{{ totalChars }}</b><span>Total chars</span></div>
+                    <div class="stat"><b>~{{ estTokens }}</b><span>Est. tokens</span></div>
+                    <div class="stat"><b>{{ form.alternate_greetings.length }}</b><span>Greetings</span></div>
+                    <div class="stat"><b>{{ form.tags.length }}</b><span>Tags</span></div>
+                  </div>
                 </div>
+                <div class="sticky-note">★ PNG CARDS EMBED V2 JSON INSIDE tEXt METADATA CHUNKS. YOUR DRAFT AUTOSAVES LOCALLY — CLOSE THE TAB, COME BACK, IT'S STILL HERE.</div>
+              </aside>
+            </div>
+          </div>
+
+          <!-- ================= ROUTE: RAW ================= -->
+          <div v-else-if="route==='raw'" key="raw">
+            <div class="rhead">
+              <div>
+                <h2>RAW <span class="hl">MODE</span>.</h2>
+                <p class="rsub">SKIP THE FORM. PASTE ANY V2 / V1 / FLAT JSON, DROP AN IMAGE, COMPILE A PNG CARD INSTANTLY.</p>
+              </div>
+              <div class="r-stamp">02</div>
             </div>
 
-            <!-- ====== DIRECT MAKER TAB ====== -->
-            <div id="tab-direct" class="tab-content hidden fade-in">
-                <div class="flex flex-col lg:flex-row gap-6">
-                    <!-- Left: Raw JSON Input & Image Upload -->
-                    <div class="flex-1 min-w-0">
-                        <!-- Image Upload -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-image" style="color:var(--accent)"></i> Character Image</h3>
-                                <i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="section-body">
-                                <div class="drop-zone" id="directImageDropZone"
-                                    onclick="document.getElementById('directImageInput').click()">
-                                    <input type="file" id="directImageInput" accept="image/png,image/jpeg,image/webp" hidden>
-                                    <div class="icon"><i class="fas fa-cloud-arrow-up"></i></div>
-                                    <p class="font-semibold mb-1">Drop image here or click to browse</p>
-                                    <p class="text-xs" style="color:var(--muted)">PNG recommended. Will be converted to PNG on export.</p>
-                                </div>
-                                <div id="directImagePreviewContainer" class="hidden">
-                                    <div class="flex items-center gap-4">
-                                        <img id="directImagePreviewThumb"
-                                            class="w-20 h-20 rounded-lg object-cover border border-bdr">
-                                        <div class="flex-1 min-w-0">
-                                            <p id="directImageFileName" class="text-sm font-medium truncate"></p>
-                                            <p id="directImageFileSize" class="text-xs" style="color:var(--muted)"></p>
-                                        </div>
-                                        <button class="btn btn-danger btn-sm" onclick="removeDirectImage()"><i
-                                                class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Raw JSON Area -->
-                        <div class="section-card">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <h3><i class="fas fa-code" style="color:var(--accent)"></i> Raw Character JSON</h3>
-                                <div class="flex items-center gap-2">
-                                    <span id="jsonValidationBadge" class="px-2 py-0.5 rounded text-xs font-mono bg-err text-white" style="display: none;">Invalid JSON</span>
-                                    <span id="jsonValidBadge" class="px-2 py-0.5 rounded text-xs font-mono bg-ok text-white" style="display: none;">Valid JSON</span>
-                                    <i class="fas fa-chevron-down chevron"></i>
-                                </div>
-                            </div>
-                            <div class="section-body">
-                                <div class="flex justify-between items-center mb-1">
-                                    <label class="mb-0">Paste your TavernAI V2 JSON below:</label>
-                                    <div class="flex gap-2">
-                                        <button class="btn btn-secondary btn-sm" onclick="formatDirectJson()" title="Format JSON code"><i class="fas fa-align-left"></i> Format</button>
-                                        <button class="btn btn-secondary btn-sm" onclick="clearDirectJson()" title="Clear JSON"><i class="fas fa-eraser"></i> Clear</button>
-                                    </div>
-                                </div>
-                                <textarea id="directJsonInput" rows="18" placeholder='{&#10;  "spec": "chara_card_v2",&#10;  "spec_version": "2.0",&#10;  "data": {&#10;    ...&#10;  }&#10;}' style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height: 1.5; tab-size: 2;" oninput="validateDirectJson()"></textarea>
-                                <div id="jsonErrorText" class="text-xs text-red-500 font-mono mt-1 hidden"></div>
-                            </div>
-                        </div>
-
-                        <!-- Direct Export Actions -->
-                        <div class="flex flex-wrap gap-3 mt-2 mb-8">
-                            <button class="btn btn-primary" onclick="exportDirectPng()"><i class="fas fa-download"></i> Export PNG Card</button>
-                            <button class="btn btn-secondary" onclick="exportDirectJson()"><i class="fas fa-code"></i> Export JSON</button>
-                            <button class="btn btn-secondary" onclick="loadIntoEditor()"><i class="fas fa-pen"></i> Load into Form Editor</button>
-                        </div>
+            <div class="forge-grid">
+              <div>
+                <!-- cover -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.rawCover}" @click="open.rawCover=!open.rawCover">
+                    <span class="p-num" style="background:var(--lime)">A</span>
+                    <span class="p-t">Cover Image</span>
+                    <span class="p-x">{{ open.rawCover ? '−' : '+' }}</span>
+                  </button>
+                  <div class="p-b" v-show="open.rawCover">
+                    <div v-if="!dImg.url" class="drop" :class="{over:drag.raw}"
+                         @click="$refs.rawCoverInput.click()"
+                         @dragenter.prevent="drag.raw=true" @dragover.prevent="drag.raw=true"
+                         @dragleave.prevent="drag.raw=false" @drop.prevent="drag.raw=false; onImageDrop($event,'direct')">
+                      <div class="drop-g">⇪</div>
+                      <p>Drop image / click to browse</p>
+                      <small>OPTIONAL — A GENERATED COVER IS USED IF NONE IS PROVIDED</small>
                     </div>
-
-                    <!-- Right: Help & Example Panel -->
-                    <div class="lg:w-80 flex-shrink-0">
-                        <div class="lg:sticky lg:top-6 flex flex-col gap-4">
-                            <!-- Help Panel -->
-                            <div class="p-4 rounded-lg text-xs" style="background:var(--surface); border: 1px solid var(--bdr)">
-                                <h4 class="font-bold text-sm mb-2" style="color:var(--txt)"><i class="fas fa-circle-info mr-1" style="color:var(--accent)"></i> Direct PNG Embedding</h4>
-                                <p class="mb-2 leading-relaxed" style="color:var(--muted)">This panel lets you bypass the UI form completely. Paste any raw character card JSON (TavernAI V2 spec), upload an image, and compile them into a PNG card instantly.</p>
-                                <p class="leading-relaxed" style="color:var(--muted)">A valid character JSON must include at least the <code>spec</code>, <code>spec_version</code>, and a <code>data</code> object with a <code>name</code> field.</p>
-                            </div>
-
-                            <!-- Example V2 JSON Panel -->
-                            <div class="p-4 rounded-lg" style="background:var(--surface); border: 1px solid var(--bdr)">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold text-xs uppercase tracking-wide" style="color:var(--muted)">Example JSON V2</h4>
-                                    <div class="flex gap-1">
-                                        <button class="btn btn-secondary btn-sm" onclick="loadExampleIntoDirect()" style="padding: 3px 8px; font-size: 11px;"><i class="fas fa-file-import"></i> Use Example</button>
-                                        <button class="btn btn-secondary btn-sm" onclick="copyExampleJson()" style="padding: 3px 8px; font-size: 11px;"><i class="fas fa-copy"></i> Copy</button>
-                                    </div>
-                                </div>
-                                <div class="relative">
-                                    <pre id="exampleJsonCode" class="text-xs" style="background:var(--elevated); border: 1px solid var(--bdr); border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; line-height: 1.4; overflow-x: auto; max-height: 350px; color: var(--muted)"></pre>
-                                </div>
-                            </div>
-                        </div>
+                    <div v-else class="imgrow">
+                      <img :src="dImg.url" alt="character cover">
+                      <div class="m">
+                        <div class="nm">{{ dImg.name }}</div>
+                        <div class="sz">{{ fmtSize(dImg.size) }} · PNG</div>
+                      </div>
+                      <button class="b b-sm" @click="$refs.rawCoverInput.click()" aria-label="Replace image">⇄</button>
+                      <button class="b b-d b-sm" @click="removeImage('direct')" aria-label="Remove image">✕</button>
                     </div>
+                    <input ref="rawCoverInput" type="file" accept="image/png,image/jpeg,image/webp" hidden @change="onFilePick($event,'direct')">
+                  </div>
+                </section>
+
+                <!-- json -->
+                <section class="panel">
+                  <button class="p-h" :class="{closed:!open.rawJson}" @click="open.rawJson=!open.rawJson">
+                    <span class="p-num" style="background:var(--violet)">B</span>
+                    <span class="p-t">Raw Character JSON</span>
+                    <span style="display:flex;align-items:center;gap:10px">
+                      <span v-if="directStatus.state==='ok'" class="lamp ok">● VALID</span>
+                      <span v-else-if="directStatus.state==='warn'" class="lamp warn">● NO NAME</span>
+                      <span v-else-if="directStatus.state==='err'" class="lamp err">● BROKEN</span>
+                      <span class="p-x">{{ open.rawJson ? '−' : '+' }}</span>
+                    </span>
+                  </button>
+                  <div class="p-b" v-show="open.rawJson">
+                    <div class="toolrow">
+                      <label style="margin:0">Paste TavernAI JSON — terminal below</label>
+                      <span style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="b b-sm" @click="formatDirect">Format</button>
+                        <button class="b b-sm" @click="minifyDirect">Minify</button>
+                        <button class="b b-d b-sm" @click="clearDirect">Clear</button>
+                      </span>
+                    </div>
+                    <textarea class="code" v-model="directText" rows="18" spellcheck="false"
+                      placeholder='{&#10;  "spec": "chara_card_v2",&#10;  "spec_version": "2.0",&#10;  "data": { ... }&#10;}'></textarea>
+                    <p v-if="directStatus.state==='err'" class="jbox err">✕ {{ directStatus.error }}</p>
+                    <p v-else-if="directStatus.state==='warn'" class="jbox warn">▲ JSON PARSES, BUT THE CHARACTER "name" FIELD IS MISSING.</p>
+                  </div>
+                </section>
+
+                <div class="dock">
+                  <span class="dock-t">OUTPUT ▸</span>
+                  <button class="b b-p" @click="exportDirectPng">⤓ Export PNG</button>
+                  <button class="b" @click="exportDirectJson">⤓ JSON</button>
+                  <button class="b b-v" @click="loadIntoEditor">✎ Load into Forge</button>
                 </div>
-            </div>
+              </div>
 
-            <!-- ====== DECODER TAB ====== -->
-            <div id="tab-decoder" class="tab-content hidden fade-in">
-                <div class="max-w-3xl mx-auto">
-                    <div class="drop-zone mb-6" id="decodeDropZone"
-                        onclick="document.getElementById('decodeFileInput').click()">
-                        <input type="file" id="decodeFileInput" accept="image/png,.png" hidden>
-                        <div class="icon"><i class="fas fa-file-magnifying-glass"></i></div>
-                        <p class="font-semibold mb-1">Drop character card PNG here to decode</p>
-                        <p class="text-xs" style="color:var(--muted)">Supports chara_card_v2 PNG files with embedded
-                            data</p>
-                    </div>
-
-                    <div id="decodedImageSection" class="hidden mb-6">
-                        <div class="flex items-start gap-4">
-                            <img id="decodedImage" class="w-32 h-40 rounded-lg object-cover border border-bdr">
-                            <div class="flex-1">
-                                <h2 class="text-2xl font-bold mb-1" id="decodedName"></h2>
-                                <p class="text-sm" style="color:var(--muted)" id="decodedMeta"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="decodedDataSection" class="hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-lg">Decoded Data</h3>
-                            <div class="flex gap-2">
-                                <button class="btn btn-secondary btn-sm" onclick="copyDecodedJson()"><i
-                                        class="fas fa-copy"></i> Copy JSON</button>
-                                <button class="btn btn-secondary btn-sm" onclick="downloadDecodedJson()"><i
-                                        class="fas fa-download"></i> Download JSON</button>
-                                <button class="btn btn-primary btn-sm" onclick="editDecodedCard()"><i
-                                        class="fas fa-pen"></i> Edit this card</button>
-                            </div>
-                        </div>
-                        <div id="decodedFields"></div>
-                    </div>
-
-                    <div id="decodedRawSection" class="hidden mt-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="mb-0">Raw JSON</label>
-                            <button class="btn btn-secondary btn-sm" onclick="toggleRawJson()"><i
-                                    class="fas fa-code"></i> Toggle</button>
-                        </div>
-                        <pre id="decodedRawJson" class="hidden"
-                            style="background:var(--elevated); border: 1px solid var(--bdr); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto; color: var(--muted)"></pre>
-                    </div>
+              <aside class="inspector">
+                <div class="manual">
+                  <p class="m-title"><i></i>Manual</p>
+                  <p>THIS PANEL BYPASSES THE UI FORM COMPLETELY. PASTE ANY RAW CHARACTER CARD JSON (TAVERNAI V2 SPEC), UPLOAD AN IMAGE, AND COMPILE THEM INTO A PNG CARD INSTANTLY.</p>
+                  <p>A VALID CARD NEEDS <code>spec</code>, <code>spec_version</code> AND A <code>data</code> OBJECT WITH A <code>name</code>. LEGACY V1 / FLAT JSON IS AUTO-WRAPPED INTO V2 ON EXPORT.</p>
                 </div>
+                <div class="manual">
+                  <div class="toolrow" style="margin-bottom:10px">
+                    <p class="m-title" style="margin:0"><i style="background:var(--lime)"></i>Example V2</p>
+                    <span style="display:flex;gap:7px">
+                      <button class="b b-xs" @click="useExample">Use</button>
+                      <button class="b b-xs" @click="copyText(exampleJsonStr,'Example JSON copied!')">Copy</button>
+                    </span>
+                  </div>
+                  <pre class="screen">{{ exampleJsonStr }}</pre>
+                </div>
+              </aside>
             </div>
-        </main>
+          </div>
 
-        <footer style="padding: 40px 20px; text-align: center; border-top: 1px solid var(--bdr); margin-top: 40px;">
-            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
-                Built by <span style="color: var(--txt); font-weight: 500;">altkriz</span>
-            </p>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <a href="https://x.com/altkriz" target="_blank"
-                    style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i
-                        class="fab fa-x-twitter"></i> Twitter/X</a>
-                <a href="https://instagram.com/altkriz" target="_blank"
-                    style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i
-                        class="fab fa-instagram"></i> Instagram</a>
-                <a href="https://github.com/altkriz" target="_blank"
-                    style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i
-                        class="fab fa-github"></i> GitHub</a>
-                <a href="https://altkriz.github.io/" target="_blank"
-                    style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;"><i
-                        class="fas fa-globe"></i> Website</a>
+          <!-- ================= ROUTE: DECODE ================= -->
+          <div v-else key="decode">
+            <div class="rhead">
+              <div>
+                <h2>DE<span class="hl">CODE</span>.</h2>
+                <p class="rsub">CRACK OPEN ANY CHARACTER PNG. READS EMBEDDED CHARA_CARD_V2 (AND LEGACY) tEXt METADATA.</p>
+              </div>
+              <div class="r-stamp">03</div>
             </div>
-        </footer>
-
-        <canvas id="defaultCanvas" width="400" height="600" style="display:none"></canvas>
-
-        <script>
-            /* ==================== THEME ==================== */
-            function toggleTheme() {
-                const body = document.body;
-                const icon = document.getElementById('themeIcon');
-                if (body.getAttribute('data-theme') === 'dark') {
-                    body.setAttribute('data-theme', 'light');
-                    icon.className = 'fas fa-moon';
-                    localStorage.setItem('aimaker-theme', 'light');
-                } else {
-                    body.setAttribute('data-theme', 'dark');
-                    icon.className = 'fas fa-sun';
-                    localStorage.setItem('aimaker-theme', 'dark');
-                }
-            }
-            (function initTheme() {
-                const saved = localStorage.getItem('aimaker-theme');
-                if (saved) document.body.setAttribute('data-theme', saved);
-                requestAnimationFrame(function () {
-                    const icon = document.getElementById('themeIcon');
-                    if (icon) icon.className = document.body.getAttribute('data-theme') === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-                });
-            })();
-
-            /* ==================== STATE ==================== */
-            let uploadedImagePng = null;
-            let uploadedImageUrl = null;
-            let currentTags = [];
-            let altGreetingCount = 0;
-            let decodedCardData = null;
-            let decodedCardPng = null;
-
-            // Direct Maker State
-            let uploadedDirectImagePng = null;
-            let uploadedDirectImageUrl = null;
-
-            /* ==================== CRC32 IMPLEMENTATION ==================== */
-            const crcTable = new Uint32Array(256);
-            for (let n = 0; n < 256; n++) {
-                let c = n;
-                for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-                crcTable[n] = c;
-            }
-            function crc32(buf) {
-                let crc = 0xFFFFFFFF;
-                for (let i = 0; i < buf.length; i++) crc = crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8);
-                return (crc ^ 0xFFFFFFFF) >>> 0;
-            }
-
-            /* ==================== PNG CHUNK UTILITIES ==================== */
-            function readPngChunks(bytes) {
-                if (bytes.length < 8) throw new Error('File too small to be a PNG');
-                const sig = [137, 80, 78, 71, 13, 10, 26, 10];
-                for (let i = 0; i < 8; i++) if (bytes[i] !== sig[i]) throw new Error('Not a valid PNG file');
-                const chunks = [];
-                let offset = 8;
-                while (offset < bytes.length) {
-                    if (offset + 8 > bytes.length) break;
-                    const dv = new DataView(bytes.buffer || bytes, offset, 4);
-                    const len = dv.getUint32(0, false);
-                    const type = String.fromCharCode(bytes[offset + 4], bytes[offset + 5], bytes[offset + 6], bytes[offset + 7]);
-                    chunks.push({ offset, dataLen: len, type, start: offset, end: offset + 12 + len });
-                    offset += 12 + len;
-                }
-                return chunks;
-            }
-
-            function extractCharaFromPng(bytes) {
-                const chunks = readPngChunks(bytes);
-                for (const ch of chunks) {
-                    if (ch.type === 'tEXt') {
-                        let kwEnd = ch.offset + 8;
-                        while (kwEnd < ch.offset + 8 + ch.dataLen && bytes[kwEnd] !== 0) kwEnd++;
-                        const kw = new TextDecoder('latin1').decode(bytes.slice(ch.offset + 8, kwEnd));
-                        if (kw === 'chara') {
-                            const valStart = kwEnd + 1;
-                            const valEnd = ch.offset + 8 + ch.dataLen;
-                            const b64 = new TextDecoder('latin1').decode(bytes.slice(valStart, valEnd));
-                            return decodeCharaBase64(b64);
-                        }
-                    }
-                }
-                return null;
-            }
-
-            function createTextChunk(keyword, value) {
-                const enc = new TextEncoder();
-                const kwBytes = enc.encode(keyword);
-                const valBytes = enc.encode(value);
-                const chunkData = new Uint8Array(kwBytes.length + 1 + valBytes.length);
-                chunkData.set(kwBytes, 0);
-                chunkData[kwBytes.length] = 0;
-                chunkData.set(valBytes, kwBytes.length + 1);
-                const typeBytes = new Uint8Array([0x74, 0x45, 0x58, 0x74]); // tEXt
-                const crcInput = new Uint8Array(4 + chunkData.length);
-                crcInput.set(typeBytes, 0);
-                crcInput.set(chunkData, 4);
-                const crcVal = crc32(crcInput);
-                const chunk = new Uint8Array(4 + 4 + chunkData.length + 4);
-                const dv = new DataView(chunk.buffer);
-                dv.setUint32(0, chunkData.length, false);
-                chunk[4] = 0x74; chunk[5] = 0x45; chunk[6] = 0x58; chunk[7] = 0x74;
-                chunk.set(chunkData, 8);
-                dv.setUint32(chunk.length - 4, crcVal, false);
-                return chunk;
-            }
-
-            function encodeCharaBase64(jsonStr) {
-                const bytes = new TextEncoder().encode(jsonStr);
-                const bin = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
-                return btoa(bin);
-            }
-
-            function decodeCharaBase64(b64) {
-                try {
-                    const bin = atob(b64);
-                    const bytes = new Uint8Array(bin.length);
-                    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                    const str = new TextDecoder('utf-8').decode(bytes);
-                    return JSON.parse(str);
-                } catch (e) {
-                    console.error('Base64 decode error:', e);
-                    return null;
-                }
-            }
-
-            /* ==================== FORM <-> DATA ==================== */
-            function gatherCardData() {
-                const data = {
-                    spec: "chara_card_v2",
-                    spec_version: "2.0",
-                    data: {
-                        name: document.getElementById('charName').value || '',
-                        description: document.getElementById('charDescription').value || '',
-                        personality: document.getElementById('charPersonality').value || '',
-                        scenario: document.getElementById('charScenario').value || '',
-                        first_mes: document.getElementById('charFirstMes').value || '',
-                        mes_example: document.getElementById('charMesExample').value || '',
-                        creator_notes: document.getElementById('charCreatorNotes').value || '',
-                        system_prompt: document.getElementById('charSystemPrompt').value || '',
-                        post_history_instructions: document.getElementById('charPostHistory').value || '',
-                        alternate_greetings: gatherAltGreetings(),
-                        tags: [...currentTags],
-                        creator: document.getElementById('charCreator').value || '',
-                        character_version: document.getElementById('charVersion').value || '',
-                        extensions: gatherExtensions()
-                    }
-                };
-                return data;
-            }
-
-            function gatherAltGreetings() {
-                const greets = [];
-                document.querySelectorAll('.alt-greet-textarea').forEach(el => {
-                    if (el.value.trim()) greets.push(el.value);
-                });
-                return greets;
-            }
-
-            function gatherExtensions() {
-                const ext = {};
-                const depthPromptContent = document.getElementById('extDepthPrompt').value;
-                const depthPromptDepth = parseInt(document.getElementById('extDepth').value) || 4;
-                if (depthPromptContent) {
-                    ext.depth_prompt = { prompt: depthPromptContent, depth: depthPromptDepth };
-                }
-                const talk = parseFloat(document.getElementById('extTalkativeness').value);
-                if (!isNaN(talk)) ext.talkativeness = talk;
-
-                const customJsonStr = document.getElementById('extCustomJson').value.trim();
-                if (customJsonStr) {
-                    try {
-                        const custom = JSON.parse(customJsonStr);
-                        if (typeof custom === 'object' && custom !== null) {
-                            Object.assign(ext, custom);
-                        }
-                    } catch (e) { /* ignore invalid json */ }
-                }
-                return ext;
-            }
-
-            function populateForm(data) {
-                const d = data.data ? data.data : data;
-                document.getElementById('charName').value = d.name || '';
-                document.getElementById('charCreator').value = d.creator || '';
-                document.getElementById('charVersion').value = d.character_version || '';
-                document.getElementById('charDescription').value = d.description || '';
-                document.getElementById('charPersonality').value = d.personality || '';
-                document.getElementById('charScenario').value = d.scenario || '';
-                document.getElementById('charFirstMes').value = d.first_mes || '';
-                document.getElementById('charMesExample').value = d.mes_example || '';
-                document.getElementById('charCreatorNotes').value = d.creator_notes || '';
-                document.getElementById('charSystemPrompt').value = d.system_prompt || '';
-                document.getElementById('charPostHistory').value = d.post_history_instructions || '';
-
-                currentTags = Array.isArray(d.tags) ? [...d.tags] : [];
-                renderTags();
-
-                // Clear and populate alt greetings
-                document.getElementById('altGreetingsContainer').innerHTML = '';
-                altGreetingCount = 0;
-                if (Array.isArray(d.alternate_greetings)) {
-                    d.alternate_greetings.forEach(g => addAltGreeting(g));
-                }
-
-                // Extensions
-                const ext = d.extensions || {};
-                if (ext.depth_prompt) {
-                    document.getElementById('extDepthPrompt').value = ext.depth_prompt.prompt || '';
-                    document.getElementById('extDepth').value = ext.depth_prompt.depth || 4;
-                } else {
-                    document.getElementById('extDepthPrompt').value = '';
-                    document.getElementById('extDepth').value = 4;
-                }
-                document.getElementById('extTalkativeness').value = ext.talkativeness !== undefined ? ext.talkativeness : '';
-
-                const extCopy = { ...ext };
-                delete extCopy.depth_prompt;
-                delete extCopy.talkativeness;
-                document.getElementById('extCustomJson').value = Object.keys(extCopy).length > 0 ? JSON.stringify(extCopy, null, 2) : '';
-
-                updatePreview();
-            }
-
-            /* ==================== PNG PROCESSING ==================== */
-            async function getPngBytes(file) {
-                if (file.type === 'image/png') {
-                    const buffer = await file.arrayBuffer();
-                    return new Uint8Array(buffer);
-                } else {
-                    // Convert non-PNG to PNG via canvas
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = img.naturalWidth;
-                            canvas.height = img.naturalHeight;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0);
-                            canvas.toBlob(blob => {
-                                blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf))).catch(reject);
-                            }, 'image/png');
-                            URL.revokeObjectURL(img.src);
-                        };
-                        img.onerror = reject;
-                        img.src = URL.createObjectURL(file);
-                    });
-                }
-            }
-
-            function generateDefaultPngWithName(name) {
-                const canvas = document.getElementById('defaultCanvas');
-                const ctx = canvas.getContext('2d');
-                const initial = name.charAt(0).toUpperCase();
-
-                // Random color based on name
-                let hash = 0;
-                for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-                const hue = Math.abs(hash) % 360;
-
-                const grad = ctx.createLinearGradient(0, 0, 400, 600);
-                grad.addColorStop(0, `hsl(${hue}, 40%, 18%)`);
-                grad.addColorStop(1, `hsl(${(hue + 40) % 360}, 50%, 12%)`);
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, 400, 600);
-
-                // Decorative circles
-                ctx.globalAlpha = 0.06;
-                for (let i = 0; i < 5; i++) {
-                    ctx.beginPath();
-                    ctx.arc(100 + i * 70, 200 + (i % 3) * 100, 80 + i * 20, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
-                }
-                ctx.globalAlpha = 1;
-
-                ctx.fillStyle = 'rgba(232, 155, 32, 0.8)';
-                ctx.font = 'bold 200px Space Grotesk, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(initial, 200, 280);
-
-                ctx.fillStyle = 'rgba(228, 228, 240, 0.6)';
-                ctx.font = '24px Space Grotesk, sans-serif';
-                ctx.fillText(name.substring(0, 20), 200, 450);
-
-                // Get PNG bytes
-                const dataUrl = canvas.toDataURL('image/png');
-                const b64 = dataUrl.split(',')[1];
-                const bin = atob(b64);
-                const bytes = new Uint8Array(bin.length);
-                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                return bytes;
-            }
-
-            function generateDefaultPng() {
-                const name = document.getElementById('charName').value || 'Character';
-                return generateDefaultPngWithName(name);
-            }
-
-            /* ==================== DIRECT MAKER FUNCTIONS ==================== */
-            const EXAMPLE_JSON = {
-                "spec": "chara_card_v2",
-                "spec_version": "2.0",
-                "data": {
-                    "name": "Aria Nightwhisper",
-                    "description": "Aria is a quiet, intellectual mage of the Whispering Woods. She wears dark purple robes and carries a glowing staff.",
-                    "personality": "Quiet, intellectual, cautious, secretly warm-hearted.",
-                    "scenario": "You meet Aria in the mystical archives searching for a lost spellbook.",
-                    "first_mes": "*The sound of rustling parchment echoes through the dusty archive. Aria looks up from a massive tome, her glowing staff illuminating the space between you.* Oh... I did not expect anyone else to be here at this hour. What brings you to the restricted section?",
-                    "mes_example": "<START>\n{{user}}: What are you researching?\n{{char}}: *Aria gently closes the book* Ancient magic. Specifically, the resonance between celestial alignments and elemental manipulation.",
-                    "creator_notes": "A simple magical librarian character card.",
-                    "system_prompt": "Write Aria's replies in a literary, somewhat archaic style. Focus on her intelligence and subtle magic.",
-                    "post_history_instructions": "",
-                    "alternate_greetings": [
-                        "*You hear a soft sigh as Aria drops a heavy scroll.* Just when I thought I had solved the cipher...",
-                        "Who goes there? Show yourself."
-                    ],
-                    "tags": ["fantasy", "mage", "librarian"],
-                    "creator": "AiMaker User",
-                    "character_version": "1.0",
-                    "extensions": {
-                        "talkativeness": 0.6
-                    }
-                }
-            };
-
-            function initDirectMaker() {
-                const pre = document.getElementById('exampleJsonCode');
-                if (pre) {
-                    pre.textContent = JSON.stringify(EXAMPLE_JSON, null, 2);
-                }
-            }
-
-            function copyExampleJson() {
-                navigator.clipboard.writeText(JSON.stringify(EXAMPLE_JSON, null, 2)).then(() => {
-                    showToast('Example JSON copied to clipboard!', 'ok');
-                });
-            }
-
-            function loadExampleIntoDirect() {
-                if (document.getElementById('directJsonInput').value.trim()) {
-                    if (!confirm('This will overwrite your current raw JSON. Continue?')) {
-                        return;
-                    }
-                }
-                document.getElementById('directJsonInput').value = JSON.stringify(EXAMPLE_JSON, null, 2);
-                validateDirectJson();
-                showToast('Example JSON loaded into raw input!', 'ok');
-            }
-
-            function validateDirectJson() {
-                const text = document.getElementById('directJsonInput').value.trim();
-                const errorEl = document.getElementById('jsonErrorText');
-                const badgeInvalid = document.getElementById('jsonValidationBadge');
-                const badgeValid = document.getElementById('jsonValidBadge');
-                
-                if (!text) {
-                    errorEl.classList.add('hidden');
-                    badgeInvalid.style.display = 'none';
-                    badgeValid.style.display = 'none';
-                    return;
-                }
-
-                try {
-                    const parsed = JSON.parse(text);
-                    errorEl.classList.add('hidden');
-                    badgeInvalid.style.display = 'none';
-                    badgeValid.style.display = 'inline-block';
-                    
-                    const data = parsed.data || parsed;
-                    if (!data.name) {
-                        errorEl.textContent = 'Warning: Character "name" field is missing.';
-                        errorEl.classList.remove('hidden');
-                        badgeValid.textContent = 'JSON Ok (No Name)';
-                        badgeValid.className = 'px-2 py-0.5 rounded text-xs font-mono bg-accent text-white';
-                    } else {
-                        badgeValid.textContent = 'Valid JSON';
-                        badgeValid.className = 'px-2 py-0.5 rounded text-xs font-mono bg-ok text-white';
-                    }
-                } catch (e) {
-                    errorEl.textContent = e.message;
-                    errorEl.classList.remove('hidden');
-                    badgeInvalid.style.display = 'inline-block';
-                    badgeValid.style.display = 'none';
-                }
-            }
-
-            function formatDirectJson() {
-                const text = document.getElementById('directJsonInput').value.trim();
-                if (!text) return;
-                try {
-                    const parsed = JSON.parse(text);
-                    document.getElementById('directJsonInput').value = JSON.stringify(parsed, null, 2);
-                    validateDirectJson();
-                } catch (e) {
-                    showToast('Cannot format: Invalid JSON syntax.', 'err');
-                }
-            }
-
-            // Simple debounce helper
-            let debounceTimer;
-            function debounceValidate() {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(validateDirectJson, 100);
-            }
-
-            function clearDirectJson() {
-                if (confirm('Are you sure you want to clear the JSON?')) {
-                    document.getElementById('directJsonInput').value = '';
-                    validateDirectJson();
-                }
-            }
-
-            async function handleDirectImageUpload(file) {
-                try {
-                    const pngBytes = await getPngBytes(file);
-                    uploadedDirectImagePng = pngBytes;
-                    if (uploadedDirectImageUrl) URL.revokeObjectURL(uploadedDirectImageUrl);
-                    const blob = new Blob([pngBytes], { type: 'image/png' });
-                    uploadedDirectImageUrl = URL.createObjectURL(blob);
-                    showDirectImagePreview(file.name, file.size);
-                } catch (e) {
-                    console.error(e);
-                    showToast('Error processing image: ' + e.message, 'err');
-                }
-            }
-
-            function showDirectImagePreview(name, size) {
-                document.getElementById('directImagePreviewContainer').classList.remove('hidden');
-                document.getElementById('directImagePreviewThumb').src = uploadedDirectImageUrl;
-                document.getElementById('directImageFileName').textContent = name;
-                document.getElementById('directImageFileSize').textContent = (size / 1024).toFixed(1) + ' KB';
-                document.getElementById('directImageDropZone').style.display = 'none';
-            }
-
-            function removeDirectImage() {
-                uploadedDirectImagePng = null;
-                if (uploadedDirectImageUrl) URL.revokeObjectURL(uploadedDirectImageUrl);
-                uploadedDirectImageUrl = null;
-                document.getElementById('directImagePreviewContainer').classList.add('hidden');
-                document.getElementById('directImageDropZone').style.display = '';
-                document.getElementById('directImageInput').value = '';
-            }
-
-            async function exportDirectPng() {
-                const jsonText = document.getElementById('directJsonInput').value.trim();
-                if (!jsonText) {
-                    showToast('JSON data is empty.', 'err');
-                    return;
-                }
-
-                 let parsed;
-                 try {
-                     parsed = JSON.parse(jsonText);
-                 } catch (e) {
-                     showToast('Invalid JSON structure.', 'err');
-                     return;
-                 }
-
-                 const data = parsed.data || parsed;
-                 const name = (data.name || '').trim();
-                 if (!name) {
-                     showToast('Character name is missing in JSON.', 'err');
-                     return;
-                 }
-
-                 let finalJson = parsed;
-                 if (parsed.name && !parsed.data) {
-                     finalJson = {
-                         spec: "chara_card_v2",
-                         spec_version: "2.0",
-                         data: {
-                             name: parsed.name || "",
-                             description: parsed.description || "",
-                             personality: parsed.personality || "",
-                             scenario: parsed.scenario || "",
-                             first_mes: parsed.first_mes || "",
-                             mes_example: parsed.mes_example || "",
-                             creator_notes: parsed.creator_notes || "",
-                             system_prompt: parsed.system_prompt || "",
-                             post_history_instructions: parsed.post_history_instructions || "",
-                             alternate_greetings: parsed.alternate_greetings || [],
-                             tags: parsed.tags || [],
-                             creator: parsed.creator || "",
-                             character_version: parsed.character_version || "1.0",
-                             extensions: parsed.extensions || {}
-                         }
-                     };
-                 } else if (!parsed.spec || parsed.spec !== "chara_card_v2") {
-                     finalJson = {
-                         spec: "chara_card_v2",
-                         spec_version: "2.0",
-                         data: parsed.data ? parsed.data : parsed
-                     };
-                 }
-
-                 let pngBytes;
-                 if (uploadedDirectImagePng) {
-                     pngBytes = uploadedDirectImagePng;
-                 } else {
-                     await document.fonts.ready;
-                     pngBytes = generateDefaultPngWithName(name);
-                 }
-
-                 const cardJson = JSON.stringify(finalJson, null, 2);
-                 const resultBytes = embedCharaInPng(pngBytes, cardJson);
-
-                 const blob = new Blob([resultBytes], { type: 'image/png' });
-                 const url = URL.createObjectURL(blob);
-                 const a = document.createElement('a');
-                 a.href = url;
-                 a.download = (name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'character') + '.png';
-                 a.click();
-                 URL.revokeObjectURL(url);
-                 showToast('Direct PNG card exported successfully!', 'ok');
-             }
-
-             function exportDirectJson() {
-                 const jsonText = document.getElementById('directJsonInput').value.trim();
-                 if (!jsonText) { showToast('JSON data is empty.', 'err'); return; }
-                 try {
-                     const parsed = JSON.parse(jsonText);
-                     const name = (parsed.data?.name || parsed.name || 'character').trim();
-                     const blob = new Blob([JSON.stringify(parsed, null, 2)], { type: 'application/json' });
-                     const url = URL.createObjectURL(blob);
-                     const a = document.createElement('a');
-                     a.href = url;
-                     a.download = name.replace(/[^a-zA-Z0-9_-]/g, '_') + '.json';
-                     a.click();
-                     URL.revokeObjectURL(url);
-                     showToast('Direct JSON exported successfully!', 'ok');
-                 } catch (e) {
-                     showToast('Invalid JSON structure.', 'err');
-                 }
-             }
-
-             function loadIntoEditor() {
-                 const jsonText = document.getElementById('directJsonInput').value.trim();
-                 if (!jsonText) { showToast('JSON data is empty.', 'err'); return; }
-                 try {
-                     const parsed = JSON.parse(jsonText);
-                     populateForm(parsed);
-                     if (uploadedDirectImagePng) {
-                         uploadedImagePng = uploadedDirectImagePng;
-                         uploadedImageUrl = uploadedDirectImageUrl;
-                         showImagePreview(document.getElementById('directImageFileName').textContent, uploadedDirectImagePng.length);
-                     }
-                     switchTab('creator');
-                     showToast('Loaded JSON into the form editor!', 'ok');
-                 } catch (e) {
-                     showToast('Invalid JSON structure.', 'err');
-                 }
-             }
-
-            function embedCharaInPng(pngBytes, cardDataJson) {
-                const b64 = encodeCharaBase64(cardDataJson);
-                const charaChunk = createTextChunk('chara', b64);
-                const chunks = readPngChunks(pngBytes);
-
-                const parts = [];
-                // 1. PNG signature
-                parts.push(pngBytes.slice(0, 8));
-                // 2. IHDR chunk (always first)
-                const ihdr = chunks.find(c => c.type === 'IHDR');
-                if (!ihdr) throw new Error('Invalid PNG: no IHDR chunk');
-                parts.push(pngBytes.slice(ihdr.start, ihdr.end));
-                // 3. Our tEXt chunk right after IHDR
-                parts.push(charaChunk);
-                // 4. All remaining chunks (skip existing chara tEXt chunks)
-                for (const ch of chunks) {
-                    if (ch.type === 'IHDR') continue;
-                    if (ch.type === 'tEXt') {
-                        // Check if it's a chara chunk, if so skip it
-                        let kwEnd = ch.offset + 8;
-                        while (kwEnd < ch.offset + 8 + ch.dataLen && pngBytes[kwEnd] !== 0) kwEnd++;
-                        const kw = new TextDecoder('latin1').decode(pngBytes.slice(ch.offset + 8, kwEnd));
-                        if (kw === 'chara') continue;
-                    }
-                    parts.push(pngBytes.slice(ch.start, ch.end));
-                }
-                // Calculate total length
-                let totalLen = 0;
-                parts.forEach(p => totalLen += p.length);
-                const result = new Uint8Array(totalLen);
-                let offset = 0;
-                parts.forEach(p => { result.set(p, offset); offset += p.length; });
-                return result;
-            }
-
-            /* ==================== EXPORT FUNCTIONS ==================== */
-            async function exportPng() {
-                const name = document.getElementById('charName').value.trim();
-                if (!name) { showToast('Character name is required.', 'err'); return; }
-
-                let pngBytes;
-                if (uploadedImagePng) {
-                    pngBytes = uploadedImagePng;
-                } else {
-                    await document.fonts.ready; // Wait for fonts in default image
-                    pngBytes = generateDefaultPng();
-                }
-
-                const cardData = gatherCardData();
-                const cardJson = JSON.stringify(cardData, null, 2);
-                const resultBytes = embedCharaInPng(pngBytes, cardJson);
-
-                const blob = new Blob([resultBytes], { type: 'image/png' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = (name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'character') + '.png';
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('PNG card exported successfully!', 'ok');
-            }
-
-            function exportJson() {
-                const name = document.getElementById('charName').value.trim() || 'character';
-                const cardData = gatherCardData();
-                const cardJson = JSON.stringify(cardData, null, 2);
-                const blob = new Blob([cardJson], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = name.replace(/[^a-zA-Z0-9_-]/g, '_') + '.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('JSON exported successfully!', 'ok');
-            }
-
-            /* ==================== LOAD / IMPORT ==================== */
-            function loadCard() {
-                document.getElementById('loadCardInput').click();
-            }
-
-            async function handleLoadCard(file) {
-                try {
-                    if (file.type === 'application/json' || file.name.endsWith('.json')) {
-                        const text = await file.text();
-                        const data = JSON.parse(text);
-                        populateForm(data);
-                        showToast('JSON card loaded!', 'ok');
-                    } else if (file.type === 'image/png' || file.name.endsWith('.png')) {
-                        const bytes = new Uint8Array(await file.arrayBuffer());
-                        const charaData = extractCharaFromPng(bytes);
-                        if (charaData) {
-                            populateForm(charaData);
-                            // Also load the image
-                            uploadedImagePng = bytes;
-                            uploadedImageUrl = URL.createObjectURL(file);
-                            showImagePreview(file.name, file.size);
-                            showToast('PNG card loaded with character data!', 'ok');
-                        } else {
-                            showToast('PNG has no embedded character data. Image loaded anyway.', 'info');
-                            const pngBytes = await getPngBytes(file);
-                            uploadedImagePng = pngBytes;
-                            uploadedImageUrl = URL.createObjectURL(file);
-                            showImagePreview(file.name, file.size);
-                        }
-                    } else {
-                        showToast('Unsupported file type. Use PNG or JSON.', 'err');
-                    }
-                } catch (e) {
-                    console.error(e);
-                    showToast('Error loading file: ' + e.message, 'err');
-                }
-            }
-
-            function clearForm() {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
-                document.getElementById('extDepth').value = '4';
-                currentTags = [];
-                renderTags();
-                document.getElementById('altGreetingsContainer').innerHTML = '';
-                altGreetingCount = 0;
-                removeImage();
-                updatePreview();
-                showToast('Form cleared.', 'info');
-            }
-
-            /* ==================== DECODE TAB ==================== */
-            async function handleDecodeFile(file) {
-                try {
-                    const bytes = new Uint8Array(await file.arrayBuffer());
-                    decodedCardPng = bytes;
-                    const charaData = extractCharaFromPng(bytes);
-                    if (!charaData) {
-                        showToast('No chara_card_v2 data found in this PNG.', 'err');
-                        document.getElementById('decodedImageSection').classList.add('hidden');
-                        document.getElementById('decodedDataSection').classList.add('hidden');
-                        document.getElementById('decodedRawSection').classList.add('hidden');
-                        return;
-                    }
-
-                    decodedCardData = charaData;
-                    const data = charaData.data || charaData;
-
-                    // Show image
-                    const blob = new Blob([bytes], { type: 'image/png' });
-                    const imgUrl = URL.createObjectURL(blob);
-                    document.getElementById('decodedImage').src = imgUrl;
-                    document.getElementById('decodedName').textContent = data.name || 'Unknown';
-                    document.getElementById('decodedMeta').textContent =
-                        `By ${data.creator || 'Unknown'} • Version ${data.character_version || '?'} • Spec: ${charaData.spec || '?'} v${charaData.spec_version || '?'}`;
-                    document.getElementById('decodedImageSection').classList.remove('hidden');
-
-                    // Show fields
-                    const fieldsHtml = buildDecodedFieldsHtml(data);
-                    document.getElementById('decodedFields').innerHTML = fieldsHtml;
-                    document.getElementById('decodedDataSection').classList.remove('hidden');
-
-                    // Raw JSON
-                    document.getElementById('decodedRawJson').textContent = JSON.stringify(charaData, null, 2);
-                    document.getElementById('decodedRawSection').classList.remove('hidden');
-
-                    showToast('Character card decoded!', 'ok');
-                } catch (e) {
-                    console.error(e);
-                    showToast('Error decoding: ' + e.message, 'err');
-                }
-            }
-
-            function buildDecodedFieldsHtml(data) {
-                const fields = [
-                    { key: 'name', label: 'Name' },
-                    { key: 'description', label: 'Description' },
-                    { key: 'personality', label: 'Personality' },
-                    { key: 'scenario', label: 'Scenario' },
-                    { key: 'first_mes', label: 'First Message' },
-                    { key: 'mes_example', label: 'Message Examples' },
-                    { key: 'creator_notes', label: 'Creator Notes' },
-                    { key: 'system_prompt', label: 'System Prompt' },
-                    { key: 'post_history_instructions', label: 'Post History Instructions' },
-                ];
-                let html = '';
-                fields.forEach(f => {
-                    if (data[f.key]) {
-                        html += `<div class="decoded-field"><div class="field-label">${f.label}</div><div class="field-value">${escapeHtml(data[f.key])}</div></div>`;
-                    }
-                });
-                if (data.alternate_greetings && data.alternate_greetings.length > 0) {
-                    data.alternate_greetings.forEach((g, i) => {
-                        html += `<div class="decoded-field"><div class="field-label">Alternate Greeting ${i + 1}</div><div class="field-value">${escapeHtml(g)}</div></div>`;
-                    });
-                }
-                if (data.tags && data.tags.length > 0) {
-                    html += `<div class="decoded-field"><div class="field-label">Tags</div><div class="field-value">${data.tags.map(t => `<span class="tag mr-1 mb-1 inline-block">${escapeHtml(t)}</span>`).join(' ')}</div></div>`;
-                }
-                if (data.extensions && Object.keys(data.extensions).length > 0) {
-                    const extHtml = escapeHtml(JSON.stringify(data.extensions, null, 2));
-                    html += `<div class="decoded-field"><div class="field-label">Extensions</div><div class="field-value" style="font-family:'JetBrains Mono',monospace; font-size:12px">${extHtml}</div></div>`;
-                }
-                return html;
-            }
-
-            function escapeHtml(str) {
-                const div = document.createElement('div');
-                div.textContent = str;
-                return div.innerHTML;
-            }
-
-            function copyDecodedJson() {
-                if (!decodedCardData) return;
-                navigator.clipboard.writeText(JSON.stringify(decodedCardData, null, 2)).then(() => showToast('JSON copied to clipboard!', 'ok'));
-            }
-
-            function downloadDecodedJson() {
-                if (!decodedCardData) return;
-                const name = (decodedCardData.data?.name || 'character').replace(/[^a-zA-Z0-9_-]/g, '_');
-                const blob = new Blob([JSON.stringify(decodedCardData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url; a.download = name + '.json'; a.click();
-                URL.revokeObjectURL(url);
-                showToast('JSON downloaded!', 'ok');
-            }
-
-            function editDecodedCard() {
-                if (!decodedCardData) return;
-                populateForm(decodedCardData);
-                if (decodedCardPng) {
-                    uploadedImagePng = decodedCardPng;
-                    const blob = new Blob([decodedCardPng], { type: 'image/png' });
-                    uploadedImageUrl = URL.createObjectURL(blob);
-                    showImagePreview('decoded_card.png', decodedCardPng.length);
-                }
-                switchTab('creator');
-                showToast('Card loaded into editor!', 'ok');
-            }
-
-            function toggleRawJson() {
-                const el = document.getElementById('decodedRawJson');
-                el.classList.toggle('hidden');
-            }
-
-            /* ==================== IMAGE HANDLING ==================== */
-            async function handleImageUpload(file) {
-                try {
-                    const pngBytes = await getPngBytes(file);
-                    uploadedImagePng = pngBytes;
-                    if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
-                    const blob = new Blob([pngBytes], { type: 'image/png' });
-                    uploadedImageUrl = URL.createObjectURL(blob);
-                    showImagePreview(file.name, file.size);
-                    updatePreview();
-
-                    // Check if the PNG already has character data
-                    const existingData = extractCharaFromPng(pngBytes);
-                    if (existingData) {
-                        const doImport = confirm('This image already contains character data! Do you want to import it into the form?');
-                        if (doImport) populateForm(existingData);
-                    }
-                } catch (e) {
-                    console.error(e);
-                    showToast('Error processing image: ' + e.message, 'err');
-                }
-            }
-
-            function showImagePreview(name, size) {
-                document.getElementById('imagePreviewContainer').classList.remove('hidden');
-                document.getElementById('imagePreviewThumb').src = uploadedImageUrl;
-                document.getElementById('imageFileName').textContent = name;
-                document.getElementById('imageFileSize').textContent = (size / 1024).toFixed(1) + ' KB';
-                document.getElementById('imageDropZone').style.display = 'none';
-            }
-
-            function removeImage() {
-                uploadedImagePng = null;
-                if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
-                uploadedImageUrl = null;
-                document.getElementById('imagePreviewContainer').classList.add('hidden');
-                document.getElementById('imageDropZone').style.display = '';
-                document.getElementById('imageInput').value = '';
-                updatePreview();
-            }
-
-            /* ==================== PREVIEW ==================== */
-            function updatePreview() {
-                const name = document.getElementById('charName').value || '?';
-                const creator = document.getElementById('charCreator').value || 'No creator set';
-                document.getElementById('previewName').textContent = name || 'Unnamed';
-                document.getElementById('previewCreator').textContent = creator;
-                document.getElementById('previewInitial').textContent = name.charAt(0).toUpperCase();
-
-                if (uploadedImageUrl) {
-                    document.getElementById('previewImage').src = uploadedImageUrl;
-                    document.getElementById('previewImage').style.display = 'block';
-                    document.getElementById('previewPlaceholder').style.display = 'none';
-                } else {
-                    document.getElementById('previewImage').style.display = 'none';
-                    document.getElementById('previewPlaceholder').style.display = 'flex';
-                }
-            }
-
-            /* ==================== TAGS ==================== */
-            function addTag(value) {
-                const input = document.getElementById('tagInput');
-                const tag = (value || input.value).trim();
-                if (tag && !currentTags.includes(tag)) {
-                    currentTags.push(tag);
-                    renderTags();
-                }
-                input.value = '';
-            }
-
-            function removeTag(index) {
-                currentTags.splice(index, 1);
-                renderTags();
-            }
-
-            function renderTags() {
-                const container = document.getElementById('tagsContainer');
-                container.innerHTML = currentTags.map((t, i) =>
-                    `<span class="tag">${escapeHtml(t)} <span class="remove" onclick="removeTag(${i})"><i class="fas fa-xmark"></i></span></span>`
-                ).join('');
-            }
-
-            /* ==================== ALT GREETINGS ==================== */
-            function addAltGreeting(value) {
-                altGreetingCount++;
-                const id = 'altGreet' + altGreetingCount;
-                const container = document.getElementById('altGreetingsContainer');
-                const div = document.createElement('div');
-                div.className = 'alt-greet-item';
-                div.id = id;
-                div.innerHTML = `
-                <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>
-                <label class="mb-1" style="font-size:11px">Alternate Greeting #${altGreetingCount}</label>
-                <textarea class="alt-greet-textarea" rows="3" placeholder="An alternate first message...">${value ? escapeHtml(value) : ''}</textarea>
-            `;
-                container.appendChild(div);
-            }
-
-            /* ==================== UI HELPERS ==================== */
-            function toggleSection(header) {
-                header.classList.toggle('collapsed');
-                const body = header.nextElementSibling;
-                body.classList.toggle('hidden');
-            }
-
-            function switchTab(tabId) {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.tab === tabId);
-                });
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.toggle('hidden', content.id !== 'tab-' + tabId);
-                });
-            }
-
-            function showToast(message, type) {
-                const container = document.getElementById('toastContainer');
-                const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                const icons = { ok: 'fa-circle-check', err: 'fa-circle-xmark', info: 'fa-circle-info' };
-                toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
-                container.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.animation = 'slideIn .3s ease reverse';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-
-            function setupDropZone(elementId, callback) {
-                const el = document.getElementById(elementId);
-                ['dragenter', 'dragover'].forEach(evt => {
-                    el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.add('dragover'); });
-                });
-                ['dragleave', 'drop'].forEach(evt => {
-                    el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.remove('dragover'); });
-                });
-                el.addEventListener('drop', e => {
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) callback(files[0]);
-                });
-            }
-
-            /* ==================== INITIALIZATION ==================== */
-            document.addEventListener('DOMContentLoaded', () => {
-                // Tab switching
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-                });
-
-                // Image upload
-                setupDropZone('imageDropZone', handleImageUpload);
-                document.getElementById('imageInput').addEventListener('change', e => {
-                    if (e.target.files.length > 0) handleImageUpload(e.target.files[0]);
-                });
-
-                // Decode upload
-                setupDropZone('decodeDropZone', handleDecodeFile);
-                document.getElementById('decodeFileInput').addEventListener('change', e => {
-                    if (e.target.files.length > 0) handleDecodeFile(e.target.files[0]);
-                });
-
-                // Load card input
-                document.getElementById('loadCardInput').addEventListener('change', e => {
-                    if (e.target.files.length > 0) handleLoadCard(e.target.files[0]);
-                    e.target.value = '';
-                });
-
-                // Preview updates on input
-                document.getElementById('charName').addEventListener('input', updatePreview);
-                document.getElementById('charCreator').addEventListener('input', updatePreview);
-
-                // Direct image upload
-                setupDropZone('directImageDropZone', handleDirectImageUpload);
-                document.getElementById('directImageInput').addEventListener('change', e => {
-                    if (e.target.files.length > 0) handleDirectImageUpload(e.target.files[0]);
-                });
-
-                initDirectMaker();
-                updatePreview();
-            });
-        </script>
-    </body>
-
-    </html>
-
-    <!-- Kriztech Analytics Pixel Code -->
-    <script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
-    <!-- END Pixel Code -->
-    <!-- KrizReplay: Session Recording -->
-    <script defer src="https://kriztech.in/info/pixel.js"></script>
+
+            <div class="decode-wrap">
+              <div class="drop" style="margin-bottom:26px" :class="{over:drag.decode}"
+                   @click="$refs.decodeInput.click()"
+                   @dragenter.prevent="drag.decode=true" @dragover.prevent="drag.decode=true"
+                   @dragleave.prevent="drag.decode=false" @drop.prevent="drag.decode=false; onDecodeDrop($event)">
+                <div class="drop-g">⌁</div>
+                <p>Drop a character card PNG to decode</p>
+                <small>OR CLICK TO BROWSE · EVERYTHING STAYS IN YOUR BROWSER</small>
+              </div>
+              <input ref="decodeInput" type="file" accept="image/png,.png" hidden @change="onDecodePick">
+
+              <template v-if="decoded">
+                <div class="hero">
+                  <img :src="decoded.imageUrl" alt="decoded card">
+                  <div style="flex:1;min-width:0">
+                    <h2>{{ decoded.data.name || 'UNKNOWN' }}</h2>
+                    <div class="stamps">
+                      <span>BY {{ (decoded.data.creator || 'UNKNOWN').toUpperCase() }}</span>
+                      <span>VER {{ decoded.data.character_version || '?' }}</span>
+                      <span>{{ (decoded.raw.spec || 'LEGACY').toUpperCase() }} {{ decoded.raw.spec_version || '' }}</span>
+                    </div>
+                    <div class="tags" v-if="decoded.data.tags && decoded.data.tags.length">
+                      <span v-for="t in decoded.data.tags" :key="t" class="tag">{{ t }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="toolrow" style="margin-bottom:18px">
+                  <span class="dock-t">EXTRACTED DATA ▸</span>
+                  <span style="display:flex;gap:9px;flex-wrap:wrap">
+                    <button class="b b-sm" @click="copyText(decodedJsonStr,'JSON copied to clipboard!')">⧉ Copy JSON</button>
+                    <button class="b b-sm" @click="downloadDecodedJson">⤓ Download</button>
+                    <button class="b b-p b-sm" @click="editDecoded">✎ Edit this card</button>
+                  </span>
+                </div>
+
+                <div v-for="f in decodedFields" :key="f.label" class="dfield">
+                  <div class="fl"><b>{{ f.label }}</b>
+                    <button class="copybtn" @click="copyText(f.value, f.label + ' copied!')">⧉ COPY</button>
+                  </div>
+                  <div class="fv">{{ f.value }}</div>
+                </div>
+
+                <div v-if="decodedHasExt" class="dfield">
+                  <div class="fl"><b>Extensions</b></div>
+                  <div class="fv code">{{ JSON.stringify(decoded.data.extensions, null, 2) }}</div>
+                </div>
+
+                <div style="margin-top:20px">
+                  <div class="toolrow" style="margin-bottom:10px">
+                    <label style="margin:0">Raw JSON</label>
+                    <button class="b b-sm" @click="showRaw=!showRaw">{{ showRaw ? '− Hide' : '+ Show' }}</button>
+                  </div>
+                  <pre v-show="showRaw" class="screen" style="max-height:420px">{{ decodedJsonStr }}</pre>
+                </div>
+              </template>
+            </div>
+          </div>
+        </transition>
+      </div>
+
+      <!-- footer -->
+      <footer>
+        <p class="f-big">BUILT BY <span class="hl">ALTKRIZ</span> ★ FORGED FOR ROLEPLAYERS</p>
+        <div class="f-soc">
+          <a class="b b-sm" href="https://x.com/altkriz" target="_blank" rel="noopener">X / Twitter</a>
+          <a class="b b-sm" href="https://instagram.com/altkriz" target="_blank" rel="noopener">Instagram</a>
+          <a class="b b-sm" href="https://github.com/altkriz" target="_blank" rel="noopener">GitHub</a>
+          <a class="b b-sm" href="https://altkriz.github.io/" target="_blank" rel="noopener">Website</a>
+        </div>
+        <div class="f-prod">
+          <a class="b b-sm" style="background:var(--sky);color:#161512" href="https://t.me/krizrpbot" target="_blank" rel="noopener">✈ KrizRP Bot</a>
+          <a class="b b-sm" style="background:var(--coral);color:#161512" href="https://kriztech.in/krizrp" target="_blank" rel="noopener">▶ KrizRP Studio</a>
+        </div>
+        <p class="f-tiny">100% CLIENT-SIDE · YOUR CARDS NEVER LEAVE THIS TAB · SPEC CHARA_CARD_V2</p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   AiMaker — CARD FORGE edition. Vue 3 SPA, hash router, reactive
+   store, debounced autosave, tested TavernAI V2 PNG codec.
+   ================================================================ */
+const { createApp, reactive, ref, computed, watch, onMounted } = Vue;
+
+/* ---------------- CRC32 ---------------- */
+const crcTable = new Uint32Array(256);
+for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); crcTable[n] = c; }
+function crc32(buf){ let crc = 0xFFFFFFFF; for (let i = 0; i < buf.length; i++) crc = crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8); return (crc ^ 0xFFFFFFFF) >>> 0; }
+
+/* ---------------- PNG CODEC ---------------- */
+function readPngChunks(bytes){
+  if (bytes.length < 8) throw new Error('File too small to be a PNG');
+  const sig = [137,80,78,71,13,10,26,10];
+  for (let i = 0; i < 8; i++) if (bytes[i] !== sig[i]) throw new Error('Not a valid PNG file');
+  const chunks = []; let offset = 8;
+  while (offset + 8 <= bytes.length){
+    const len = ((bytes[offset]<<24)|(bytes[offset+1]<<16)|(bytes[offset+2]<<8)|bytes[offset+3])>>>0;
+    const type = String.fromCharCode(bytes[offset+4],bytes[offset+5],bytes[offset+6],bytes[offset+7]);
+    if (offset + 12 + len > bytes.length) break;
+    chunks.push({ type, dataLen: len, start: offset, end: offset + 12 + len });
+    offset += 12 + len;
+  }
+  return chunks;
+}
+function pngTextKeyword(bytes, ch){
+  let kwEnd = ch.start + 8;
+  while (kwEnd < ch.start + 8 + ch.dataLen && bytes[kwEnd] !== 0) kwEnd++;
+  return new TextDecoder('latin1').decode(bytes.slice(ch.start + 8, kwEnd));
+}
+function decodeCharaBase64(b64){
+  try {
+    const bin = atob(b64.trim());
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+  } catch(e){ console.error('chara decode error:', e); return null; }
+}
+function encodeCharaBase64(jsonStr){
+  const bytes = new TextEncoder().encode(jsonStr);
+  let bin = ''; const CH = 0x8000;
+  for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  return btoa(bin);
+}
+function extractCharaFromPng(bytes){
+  for (const ch of readPngChunks(bytes)){
+    if (ch.type === 'tEXt' && pngTextKeyword(bytes, ch) === 'chara'){
+      const valStart = ch.start + 8 + pngTextKeyword(bytes, ch).length + 1;
+      const b64 = new TextDecoder('latin1').decode(bytes.slice(valStart, ch.start + 8 + ch.dataLen));
+      return decodeCharaBase64(b64);
+    }
+  }
+  return null;
+}
+function createTextChunk(keyword, value){
+  const enc = new TextEncoder();
+  const kw = enc.encode(keyword), val = enc.encode(value);
+  const data = new Uint8Array(kw.length + 1 + val.length);
+  data.set(kw, 0); data[kw.length] = 0; data.set(val, kw.length + 1);
+  const type = new Uint8Array([0x74,0x45,0x58,0x74]); // tEXt
+  const crcIn = new Uint8Array(4 + data.length); crcIn.set(type, 0); crcIn.set(data, 4);
+  const chunk = new Uint8Array(12 + data.length);
+  const dv = new DataView(chunk.buffer);
+  dv.setUint32(0, data.length, false);
+  chunk.set(type, 4); chunk.set(data, 8);
+  dv.setUint32(chunk.length - 4, crc32(crcIn), false);
+  return chunk;
+}
+function embedCharaInPng(pngBytes, cardJson){
+  const charaChunk = createTextChunk('chara', encodeCharaBase64(cardJson));
+  const chunks = readPngChunks(pngBytes);
+  const ihdr = chunks.find(c => c.type === 'IHDR');
+  if (!ihdr) throw new Error('Invalid PNG: no IHDR chunk');
+  const parts = [pngBytes.slice(0, 8), pngBytes.slice(ihdr.start, ihdr.end), charaChunk];
+  for (const ch of chunks){
+    if (ch.type === 'IHDR') continue;
+    if (ch.type === 'tEXt' && pngTextKeyword(pngBytes, ch) === 'chara') continue;
+    parts.push(pngBytes.slice(ch.start, ch.end));
+  }
+  const total = parts.reduce((s,p) => s + p.length, 0);
+  const out = new Uint8Array(total); let off = 0;
+  for (const p of parts){ out.set(p, off); off += p.length; }
+  return out;
+}
+async function getPngBytes(file){
+  if (file.type === 'image/png') return new Uint8Array(await file.arrayBuffer());
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      canvas.toBlob(blob => blob.arrayBuffer().then(b => resolve(new Uint8Array(b))).catch(reject), 'image/png');
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => reject(new Error('Could not read image'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+/* generated cover — matches the forge aesthetic */
+function generateDefaultPng(name){
+  const c = document.createElement('canvas'); c.width = 400; c.height = 600;
+  const x = c.getContext('2d');
+  const accents = ['#C9F24B','#FF6B4A','#9D8CFF','#62C9F2','#FFC93C','#FF9BD6'];
+  let h = 0; for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+  const ac = accents[Math.abs(h) % accents.length];
+  x.fillStyle = '#F3EEE2'; x.fillRect(0, 0, 400, 600);
+  x.fillStyle = 'rgba(22,21,18,.10)';
+  for (let yy = 14; yy < 600; yy += 18) for (let xx = 14; xx < 400; xx += 18){ x.beginPath(); x.arc(xx, yy, 1.4, 0, 7); x.fill(); }
+  x.strokeStyle = '#161512'; x.lineWidth = 10; x.strokeRect(15, 15, 370, 570);
+  x.fillStyle = '#161512'; x.fillRect(94, 134, 240, 240);           // hard shadow
+  x.fillStyle = ac; x.fillRect(80, 120, 240, 240);
+  x.lineWidth = 8; x.strokeRect(80, 120, 240, 240);
+  x.fillStyle = '#161512'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = '150px "Archivo Black", sans-serif';
+  x.fillText((name.charAt(0) || '?').toUpperCase(), 200, 248);
+  x.font = '700 24px "Space Mono", monospace';
+  x.fillText(name.slice(0, 16).toUpperCase(), 200, 440);
+  x.font = '12px "Space Mono", monospace';
+  x.fillText('CHARA_CARD_V2 · SPEC 2.0', 200, 474);
+  x.font = '26px "Archivo Black", sans-serif';
+  x.fillText('★', 200, 524);
+  const bin = atob(c.toDataURL('image/png').split(',')[1]);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+function downloadBytes(bytes, filename, mime){
+  const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+const safeName = n => (n || 'character').trim().replace(/[^a-zA-Z0-9_-]/g, '_') || 'character';
+
+/* ---------------- V2 NORMALIZER ---------------- */
+function normalizeToV2(parsed){
+  const d = (parsed && parsed.data && typeof parsed.data === 'object') ? parsed.data : (parsed || {});
+  return {
+    spec: 'chara_card_v2', spec_version: '2.0',
+    data: {
+      name: d.name || '', description: d.description || '', personality: d.personality || '',
+      scenario: d.scenario || '', first_mes: d.first_mes || '', mes_example: d.mes_example || '',
+      creator_notes: d.creator_notes || '', system_prompt: d.system_prompt || '',
+      post_history_instructions: d.post_history_instructions || '',
+      alternate_greetings: Array.isArray(d.alternate_greetings) ? d.alternate_greetings : [],
+      tags: Array.isArray(d.tags) ? d.tags : [],
+      creator: d.creator || '', character_version: d.character_version || '',
+      extensions: (d.extensions && typeof d.extensions === 'object') ? d.extensions : {}
+    }
+  };
+}
+
+const EXAMPLE = normalizeToV2({
+  name: 'Aria Nightwhisper',
+  description: 'Aria is a quiet, intellectual mage of the Whispering Woods. She wears dark purple robes and carries a glowing staff.',
+  personality: 'Quiet, intellectual, cautious, secretly warm-hearted.',
+  scenario: 'You meet Aria in the mystical archives searching for a lost spellbook.',
+  first_mes: '*The sound of rustling parchment echoes through the dusty archive. Aria looks up from a massive tome, her glowing staff illuminating the space between you.* Oh... I did not expect anyone else to be here at this hour. What brings you to the restricted section?',
+  mes_example: '<START>\n{{user}}: What are you researching?\n{{char}}: *Aria gently closes the book* Ancient magic. Specifically, the resonance between celestial alignments and elemental manipulation.',
+  creator_notes: 'A simple magical librarian character card.',
+  system_prompt: "Write Aria's replies in a literary, somewhat archaic style. Focus on her intelligence and subtle magic.",
+  alternate_greetings: [
+    '*You hear a soft sigh as Aria drops a heavy scroll.* Just when I thought I had solved the cipher...',
+    'Who goes there? Show yourself.'
+  ],
+  tags: ['fantasy','mage','librarian'], creator: 'AiMaker User', character_version: '1.0',
+  extensions: { talkativeness: 0.6 }
+});
+
+const BLANK_FORM = () => ({
+  name:'', creator:'', character_version:'', description:'', personality:'', scenario:'',
+  first_mes:'', mes_example:'', creator_notes:'', system_prompt:'', post_history_instructions:'',
+  alternate_greetings:[], tags:[]
+});
+
+/* ================================================================
+   VUE APP
+   ================================================================ */
+createApp({
+  setup(){
+    /* ---------- theme ---------- */
+    const theme = ref(localStorage.getItem('aimk3-theme') || 'paper');
+    const applyTheme = () => document.documentElement.setAttribute('data-theme', theme.value);
+    applyTheme();
+    const setTheme = t => { theme.value = t; localStorage.setItem('aimk3-theme', t); applyTheme(); };
+
+    /* ---------- hash router ---------- */
+    const routes = [
+      { id:'forge',  n:'01', label:'FORGE',    sub:'create & edit cards', glyph:'★' },
+      { id:'raw',    n:'02', label:'RAW MODE', sub:'json → png',          glyph:'{}' },
+      { id:'decode', n:'03', label:'DECODE',   sub:'png → json',          glyph:'◉' }
+    ];
+    const route = ref('forge');
+    const syncRoute = () => {
+      const h = (location.hash || '').replace(/^#\/?/, '');
+      route.value = routes.some(r => r.id === h) ? h : 'forge';
+    };
+    window.addEventListener('hashchange', syncRoute); syncRoute();
+    const go = id => { location.hash = '#/' + id; };
+
+    /* ---------- toasts ---------- */
+    const toasts = ref([]); let toastId = 0;
+    const toast = (msg, type = 'info') => {
+      const id = ++toastId;
+      toasts.value.push({ id, msg, type });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3200);
+    };
+    const toastIcon = t => ({ ok:'✓', err:'✕', info:'◆' }[t] || '◆');
+
+    /* ---------- confirm modal ---------- */
+    const confirmState = ref(null);
+    const askConfirm = (title, message, okText) => new Promise(res => { confirmState.value = { title, message, okText, res }; });
+    const resolveConfirm = v => { const s = confirmState.value; confirmState.value = null; if (s) s.res(v); };
+
+    /* ---------- form store ---------- */
+    const form = reactive(BLANK_FORM());
+    const ext = reactive({ depthPrompt:'', depth:4, talkativeness:'', customJson:'' });
+    const open = reactive({ cover:true, identity:true, persona:true, dialogue:true, directives:false, ext:false, rawCover:true, rawJson:true });
+    const drag = reactive({ cover:false, raw:false, decode:false });
+    const tagDraft = ref('');
+
+    const addTag = () => {
+      const t = tagDraft.value.trim();
+      if (t && !form.tags.includes(t)) form.tags.push(t);
+      tagDraft.value = '';
+    };
+
+    const extJsonError = computed(() => {
+      const s = (ext.customJson || '').trim();
+      if (!s) return '';
+      try { const p = JSON.parse(s); if (typeof p !== 'object' || p === null || Array.isArray(p)) return 'Must be a JSON object, e.g. {"key":"value"}'; return ''; }
+      catch(e){ return e.message; }
+    });
+
+    const gatherExtensions = () => {
+      const out = {};
+      if (ext.depthPrompt) out.depth_prompt = { prompt: ext.depthPrompt, depth: parseInt(ext.depth) || 4 };
+      const talk = parseFloat(ext.talkativeness);
+      if (!isNaN(talk)) out.talkativeness = talk;
+      if (!extJsonError.value && ext.customJson.trim()) Object.assign(out, JSON.parse(ext.customJson.trim()));
+      return out;
+    };
+    const gatherCard = () => ({
+      spec:'chara_card_v2', spec_version:'2.0',
+      data: {
+        ...JSON.parse(JSON.stringify(form)),
+        alternate_greetings: form.alternate_greetings.filter(g => g && g.trim()),
+        extensions: gatherExtensions()
+      }
+    });
+
+    const populateForm = raw => {
+      const v2 = normalizeToV2(raw); const d = v2.data;
+      const clean = BLANK_FORM();
+      for (const k of Object.keys(clean)) clean[k] = JSON.parse(JSON.stringify(d[k] ?? clean[k]));
+      for (const k of Object.keys(form)) if (!(k in clean)) delete form[k];
+      Object.assign(form, clean);
+      const e = d.extensions || {};
+      ext.depthPrompt = e.depth_prompt?.prompt || '';
+      ext.depth = e.depth_prompt?.depth ?? 4;
+      ext.talkativeness = e.talkativeness !== undefined ? String(e.talkativeness) : '';
+      const rest = { ...e }; delete rest.depth_prompt; delete rest.talkativeness;
+      ext.customJson = Object.keys(rest).length ? JSON.stringify(rest, null, 2) : '';
+    };
+
+    /* ---------- images ---------- */
+    const img  = reactive({ bytes:null, url:null, name:'', size:0 });
+    const dImg = reactive({ bytes:null, url:null, name:'', size:0 });
+    const setImage = async (file, target) => {
+      const slot = target === 'direct' ? dImg : img;
+      try {
+        const bytes = await getPngBytes(file);
+        if (slot.url) URL.revokeObjectURL(slot.url);
+        slot.bytes = bytes; slot.url = URL.createObjectURL(new Blob([bytes], { type:'image/png' }));
+        slot.name = file.name; slot.size = bytes.length;
+        if (target === 'form'){
+          const existing = extractCharaFromPng(bytes);
+          if (existing && await askConfirm('Embedded card detected', 'This image already contains character data. Import it into the forge? Your current draft will be replaced.', 'Import')){
+            populateForm(existing); toast('Character data imported from image!', 'ok');
+          }
+        }
+      } catch(e){ toast('Error processing image: ' + e.message, 'err'); }
+    };
+    const removeImage = target => {
+      const slot = target === 'direct' ? dImg : img;
+      if (slot.url) URL.revokeObjectURL(slot.url);
+      slot.bytes = null; slot.url = null; slot.name = ''; slot.size = 0;
+    };
+    const onFilePick = (ev, target) => { if (ev.target.files.length) setImage(ev.target.files[0], target); ev.target.value = ''; };
+    const onImageDrop = (ev, target) => { const f = ev.dataTransfer.files; if (f.length) setImage(f[0], target); };
+
+    /* ---------- preview / stats ---------- */
+    const initial = computed(() => (form.name || '?').charAt(0).toUpperCase());
+    const totalChars = computed(() =>
+      ['description','personality','scenario','first_mes','mes_example','system_prompt','post_history_instructions']
+        .reduce((s,k) => s + (form[k] || '').length, 0) +
+      form.alternate_greetings.reduce((s,g) => s + (g || '').length, 0));
+    const estTokens = computed(() => Math.round(totalChars.value / 4));
+    const fmtSize = b => b > 1048576 ? (b/1048576).toFixed(2)+' MB' : (b/1024).toFixed(1)+' KB';
+
+    /* ---------- autosave ---------- */
+    const savedAt = ref(null); let saveTimer = null; let restoring = true;
+    const autosaveLabel = computed(() => savedAt.value ? 'DRAFT SAVED ' + savedAt.value : 'AUTOSAVE ARMED');
+    watch([form, ext], () => {
+      if (restoring) return;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        try {
+          localStorage.setItem('aimk3-draft', JSON.stringify({ form, ext }));
+          savedAt.value = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        } catch(e){}
+      }, 700);
+    }, { deep:true });
+
+    /* ---------- exports: forge ---------- */
+    const exportFormPng = async () => {
+      if (!form.name.trim()) return toast('Character name is required.', 'err');
+      if (extJsonError.value) return toast('Fix the custom extensions JSON first.', 'err');
+      try {
+        let bytes = img.bytes;
+        if (!bytes){ await document.fonts.ready; bytes = generateDefaultPng(form.name); }
+        const out = embedCharaInPng(bytes, JSON.stringify(gatherCard(), null, 2));
+        downloadBytes(out, safeName(form.name) + '.png', 'image/png');
+        toast('PNG card forged & exported!', 'ok');
+      } catch(e){ toast('Export failed: ' + e.message, 'err'); }
+    };
+    const exportFormJson = () => {
+      if (extJsonError.value) return toast('Fix the custom extensions JSON first.', 'err');
+      downloadBytes(new TextEncoder().encode(JSON.stringify(gatherCard(), null, 2)), safeName(form.name) + '.json', 'application/json');
+      toast('JSON exported!', 'ok');
+    };
+
+    /* ---------- load card ---------- */
+    const onLoadCard = async ev => {
+      const file = ev.target.files[0]; ev.target.value = '';
+      if (!file) return;
+      try {
+        if (file.type === 'application/json' || /\.json$/i.test(file.name)){
+          populateForm(JSON.parse(await file.text()));
+          toast('JSON card loaded!', 'ok');
+        } else if (file.type === 'image/png' || /\.png$/i.test(file.name)){
+          const bytes = new Uint8Array(await file.arrayBuffer());
+          const data = extractCharaFromPng(bytes);
+          if (data){ populateForm(data); toast('PNG card loaded with character data!', 'ok'); }
+          else toast('PNG has no embedded data. Image loaded anyway.', 'info');
+          if (img.url) URL.revokeObjectURL(img.url);
+          img.bytes = bytes; img.url = URL.createObjectURL(new Blob([bytes], { type:'image/png' }));
+          img.name = file.name; img.size = file.size;
+        } else toast('Unsupported file type. Use PNG or JSON.', 'err');
+      } catch(e){ toast('Error loading file: ' + e.message, 'err'); }
+    };
+
+    const clearForm = async () => {
+      if (!await askConfirm('Clear the forge?', 'This wipes every field, tag, greeting and the cover image. Your local draft will also be reset.', 'Clear everything')) return;
+      Object.assign(form, BLANK_FORM());
+      Object.assign(ext, { depthPrompt:'', depth:4, talkativeness:'', customJson:'' });
+      removeImage('form');
+      localStorage.removeItem('aimk3-draft');
+      toast('Forge cleared.', 'info');
+    };
+    const loadExampleToForm = async () => {
+      if (form.name && !await askConfirm('Load example?', 'This replaces your current draft with the Aria Nightwhisper example card.', 'Load example')) return;
+      populateForm(EXAMPLE); toast('Example character loaded!', 'ok');
+    };
+
+    /* ---------- raw mode ---------- */
+    const directText = ref('');
+    const exampleJsonStr = JSON.stringify(EXAMPLE, null, 2);
+    const directStatus = computed(() => {
+      const s = directText.value.trim();
+      if (!s) return { state:'empty' };
+      try {
+        const p = JSON.parse(s); const d = p.data || p;
+        return (d && d.name) ? { state:'ok', parsed:p } : { state:'warn', parsed:p };
+      } catch(e){ return { state:'err', error:e.message }; }
+    });
+    const formatDirect = () => {
+      if (directStatus.value.state === 'err') return toast('Cannot format: invalid JSON syntax.', 'err');
+      if (!directText.value.trim()) return;
+      directText.value = JSON.stringify(directStatus.value.parsed, null, 2);
+    };
+    const minifyDirect = () => {
+      if (directStatus.value.state === 'err') return toast('Cannot minify: invalid JSON syntax.', 'err');
+      if (!directText.value.trim()) return;
+      directText.value = JSON.stringify(directStatus.value.parsed);
+    };
+    const clearDirect = async () => {
+      if (!directText.value.trim()) return;
+      if (await askConfirm('Clear raw JSON?', 'The raw JSON input will be emptied.', 'Clear')) directText.value = '';
+    };
+    const useExample = async () => {
+      if (directText.value.trim() && !await askConfirm('Overwrite raw JSON?', 'This replaces your current raw JSON with the example card.', 'Use example')) return;
+      directText.value = exampleJsonStr; toast('Example JSON loaded!', 'ok');
+    };
+    const requireDirectParsed = () => {
+      if (!directText.value.trim()){ toast('JSON data is empty.', 'err'); return null; }
+      if (directStatus.value.state === 'err'){ toast('Invalid JSON structure.', 'err'); return null; }
+      return directStatus.value.parsed;
+    };
+    const exportDirectPng = async () => {
+      const parsed = requireDirectParsed(); if (!parsed) return;
+      const v2 = normalizeToV2(parsed);
+      if (!v2.data.name.trim()) return toast('Character name is missing in JSON.', 'err');
+      try {
+        let bytes = dImg.bytes;
+        if (!bytes){ await document.fonts.ready; bytes = generateDefaultPng(v2.data.name); }
+        const out = embedCharaInPng(bytes, JSON.stringify(v2, null, 2));
+        downloadBytes(out, safeName(v2.data.name) + '.png', 'image/png');
+        toast('Raw PNG card exported!', 'ok');
+      } catch(e){ toast('Export failed: ' + e.message, 'err'); }
+    };
+    const exportDirectJson = () => {
+      const parsed = requireDirectParsed(); if (!parsed) return;
+      const v2 = normalizeToV2(parsed);
+      downloadBytes(new TextEncoder().encode(JSON.stringify(v2, null, 2)), safeName(v2.data.name) + '.json', 'application/json');
+      toast('Raw JSON exported (normalized to V2)!', 'ok');
+    };
+    const loadIntoEditor = () => {
+      const parsed = requireDirectParsed(); if (!parsed) return;
+      populateForm(parsed);
+      if (dImg.bytes){
+        if (img.url) URL.revokeObjectURL(img.url);
+        img.bytes = dImg.bytes; img.url = dImg.url; img.name = dImg.name; img.size = dImg.size;
+        dImg.bytes = null; dImg.url = null; dImg.name = ''; dImg.size = 0;
+      }
+      go('forge'); toast('Loaded into the forge!', 'ok');
+    };
+
+    /* ---------- decoder ---------- */
+    const decoded = ref(null);
+    const showRaw = ref(false);
+    const decodedJsonStr = computed(() => decoded.value ? JSON.stringify(decoded.value.raw, null, 2) : '');
+    const decodedHasExt = computed(() => !!decoded.value && !!decoded.value.data.extensions && Object.keys(decoded.value.data.extensions).length > 0);
+    const FIELD_MAP = [
+      ['description','Description'],['personality','Personality'],['scenario','Scenario'],
+      ['first_mes','First Message'],['mes_example','Message Examples'],['creator_notes','Creator Notes'],
+      ['system_prompt','System Prompt'],['post_history_instructions','Post History Instructions']
+    ];
+    const decodedFields = computed(() => {
+      if (!decoded.value) return [];
+      const d = decoded.value.data; const out = [];
+      for (const [k,label] of FIELD_MAP) if (d[k]) out.push({ label, value:String(d[k]) });
+      (d.alternate_greetings || []).forEach((g,i) => { if (g) out.push({ label:'Alternate Greeting ' + (i+1), value:String(g) }); });
+      return out;
+    });
+    const handleDecode = async file => {
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const raw = extractCharaFromPng(bytes);
+        if (!raw){ decoded.value = null; return toast('No character data found in this PNG.', 'err'); }
+        if (decoded.value?.imageUrl) URL.revokeObjectURL(decoded.value.imageUrl);
+        decoded.value = {
+          raw, data: raw.data || raw, bytes,
+          imageUrl: URL.createObjectURL(new Blob([bytes], { type:'image/png' }))
+        };
+        showRaw.value = false;
+        toast('Character card decoded!', 'ok');
+      } catch(e){ toast('Error decoding: ' + e.message, 'err'); }
+    };
+    const onDecodePick = ev => { if (ev.target.files.length) handleDecode(ev.target.files[0]); ev.target.value = ''; };
+    const onDecodeDrop = ev => { const f = ev.dataTransfer.files; if (f.length) handleDecode(f[0]); };
+    const downloadDecodedJson = () => {
+      if (!decoded.value) return;
+      downloadBytes(new TextEncoder().encode(decodedJsonStr.value), safeName(decoded.value.data.name) + '.json', 'application/json');
+      toast('JSON downloaded!', 'ok');
+    };
+    const editDecoded = () => {
+      if (!decoded.value) return;
+      populateForm(decoded.value.raw);
+      if (img.url) URL.revokeObjectURL(img.url);
+      img.bytes = decoded.value.bytes;
+      img.url = URL.createObjectURL(new Blob([decoded.value.bytes], { type:'image/png' }));
+      img.name = 'decoded_card.png'; img.size = decoded.value.bytes.length;
+      go('forge'); toast('Card loaded into the forge!', 'ok');
+    };
+
+    /* ---------- clipboard ---------- */
+    const copyText = async (text, okMsg) => {
+      try { await navigator.clipboard.writeText(text); toast(okMsg || 'Copied!', 'ok'); }
+      catch(e){
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); toast(okMsg || 'Copied!', 'ok');
+      }
+    };
+
+    /* ---------- init ---------- */
+    onMounted(() => {
+      try {
+        const draft = JSON.parse(localStorage.getItem('aimk3-draft') || 'null');
+        if (draft && draft.form){
+          Object.assign(form, { ...BLANK_FORM(), ...draft.form });
+          Object.assign(ext, { depthPrompt:'', depth:4, talkativeness:'', customJson:'' }, draft.ext || {});
+          if (form.name) toast('Draft restored from your last session.', 'info');
+        }
+      } catch(e){}
+      requestAnimationFrame(() => { restoring = false; });
+      if (!location.hash) history.replaceState(null, '', '#/forge');
+    });
+
+    return {
+      theme, setTheme, routes, route, go,
+      toasts, toastIcon, confirmState, resolveConfirm,
+      form, ext, open, drag, tagDraft, addTag, extJsonError,
+      img, dImg, removeImage, onFilePick, onImageDrop,
+      initial, totalChars, estTokens, fmtSize, savedAt, autosaveLabel,
+      exportFormPng, exportFormJson, onLoadCard, clearForm, loadExampleToForm,
+      directText, exampleJsonStr, directStatus, formatDirect, minifyDirect, clearDirect, useExample,
+      exportDirectPng, exportDirectJson, loadIntoEditor,
+      decoded, showRaw, decodedJsonStr, decodedHasExt, decodedFields, onDecodePick, onDecodeDrop, downloadDecodedJson, editDecoded,
+      copyText, JSON
+    };
+  }
+}).mount('#app');
+</script>
+
+<!-- Kriztech Analytics Pixel Code -->
+<script defer src="https://kriztech.in/analytics/pixel/avAZACaPItZVZvQk"></script>
+<!-- END Pixel Code -->
+<!-- KrizReplay: Session Recording -->
+<script defer src="https://kriztech.in/info/pixel.js"></script>
 </body>
-
 </html>
